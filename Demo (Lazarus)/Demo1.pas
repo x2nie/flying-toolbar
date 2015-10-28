@@ -14,10 +14,13 @@ uses
 {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls,
   Forms, StdCtrls, ExtCtrls, ComCtrls, Menus, Dialogs,
-  TBx2, TBx2_Toolbar, TBx2_Button,
-  GR32_Image;
+  TBx2, TBx2_Toolbar, TBx2_Button
+  {,GR32_Image};
 
 type
+
+  { TDemoForm }
+
   TDemoForm = class(TForm)
     Memo: TMemo;
     ToolbarPopupMenu: TPopupMenu;
@@ -71,6 +74,8 @@ type
     ToolbarButtonX27: TToolbarButtonX2;
     ToolbarButtonX28: TToolbarButtonX2;
     procedure FExitClick(Sender: TObject);
+    procedure LeftDockRequestDock(Sender: TObject; Bar: TCustomToolWindowX2;
+      var Accept: Boolean);
     procedure VTMainClick(Sender: TObject);
     procedure VTEditClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -113,6 +118,12 @@ end;
 procedure TDemoForm.FExitClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TDemoForm.LeftDockRequestDock(Sender: TObject;
+  Bar: TCustomToolWindowX2; var Accept: Boolean);
+begin
+
 end;
 
 procedure TDemoForm.ToolbarPopupMenuPopup(Sender: TObject);

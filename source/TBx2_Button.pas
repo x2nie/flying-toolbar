@@ -43,7 +43,7 @@ uses
 {$ENDIF}
   Classes, Controls, Forms, Menus, Graphics, Buttons,
   {$IFDEF TB97D4} ImgList, ActnList, {$ENDIF} StdCtrls, ExtCtrls,
-  GR32, GR32_Image,
+  {GR32, GR32_Image,}
   TBx2_Const, TBx2_Toolbar;
 
 

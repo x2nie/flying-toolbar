@@ -29,7 +29,6 @@ package TBx2_D7;
 requires
   rtl,
   vcl,
-  GR32_D7,
   designide,
   vclactnband,
   vclx;

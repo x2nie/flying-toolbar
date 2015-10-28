@@ -6,7 +6,7 @@ uses
   Windows, SysUtils, Messages, Classes, Graphics, Controls,
   Forms, StdCtrls, ExtCtrls, ComCtrls, Menus, Dialogs,
   TBx2, TBx2_Toolbar, TBx2_Button,
-  GR32_Image, ToolWin, Buttons, ImgList;
+  ToolWin, Buttons, ImgList;
 
 type
   TDemoForm = class(TForm)

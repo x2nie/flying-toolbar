@@ -12,7 +12,7 @@ object DemoForm: TDemoForm
   Font.Name = 'MS Sans Serif'
   Menu = MainMenu
   OnCreate = FormCreate
-  LCLVersion = '1.0.12.0'
+  LCLVersion = '1.4.4.0'
   object TopDock: TDockX2
     Left = 0
     Height = 104
@@ -271,14 +271,15 @@ object DemoForm: TDemoForm
   end
   object LeftDock: TDockX2
     Left = 0
-    Height = 184
+    Height = 181
     Top = 104
     Width = 9
     Position = dpLeft
+    OnRequestDock = LeftDockRequestDock
   end
   object Memo: TMemo
     Left = 9
-    Height = 184
+    Height = 181
     Top = 104
     Width = 435
     Align = alClient
@@ -301,7 +302,7 @@ object DemoForm: TDemoForm
   end
   object RightDock: TDockX2
     Left = 444
-    Height = 184
+    Height = 181
     Top = 104
     Width = 9
     Position = dpRight
@@ -309,14 +310,14 @@ object DemoForm: TDemoForm
   object BottomDock: TDockX2
     Left = 0
     Height = 9
-    Top = 288
+    Top = 285
     Width = 453
     Position = dpBottom
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 20
-    Top = 297
+    Height = 23
+    Top = 294
     Width = 453
     Panels = <    
       item

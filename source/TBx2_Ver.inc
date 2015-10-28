@@ -4,6 +4,8 @@
 
 { Determine Delphi/C++Builder(/Lazarus) version }
 
+{.$DEFINE TBX2_GR32}
+
 {$IFDEF FPC}
  {$MODE DELPHI}
   {$packset fixed}

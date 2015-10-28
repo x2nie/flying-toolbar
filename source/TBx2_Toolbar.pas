@@ -40,7 +40,9 @@ uses
   Windows, Messages,
 {$ENDIF}
   Classes, Controls, SysUtils, Graphics,
+{$IFDEF TBX2_GR32}
   GR32, GR32_Image,
+{$ENDIF}
   TBx2, TBx2_Common, TBx2_Const
   ;
 
@@ -76,7 +78,11 @@ type
 
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
+    {$IFDEF TBX2_GR32}
     procedure DoPaintBuffer; override;
+    {$ELSE}
+    procedure Paint;override;
+    {$ENDIF}
     //function AdjustedClientArea: TRect; virtual; //client area
     procedure GetBarSize (var ASize: Integer; const DockType: TDockType); override;
     function OrderControls (CanMoveControls: Boolean; PreviousDockType: TDockType;
@@ -393,11 +399,13 @@ begin
   SlaveInfo := TList.Create;
   LineSeps := TList.Create;
   OrderList := TList.Create;
-
+  {$IFDEF TBX2_GR32}
   Options := [pboAutoFocus, pboWantArrowKeys];
+  {$ENDIF}
   Cursor := crSize;
 end;
 
+{$IFDEF TBX2_GR32}
 procedure TCustomToolbarX2.DoPaintBuffer;
 var r : TRect;
 begin
@@ -410,6 +418,22 @@ begin
   //AdjustClientRect(R);
   Buffer.FrameRectS(R, clTrRed32);
 end;
+{$ELSE}
+procedure TCustomToolbarX2.Paint;
+var r : TRect;
+begin
+  inherited;
+  R := BoundsRect;
+  Canvas.Pen.Color:= clGreen;
+  Canvas.FrameRect(R);
+
+  //Buffer.FrameRectS(AdjustedClientArea, clRed32);
+  R := ClientRect;
+  //AdjustClientRect(R);
+  Canvas.Pen.Color:=clRed;
+  Canvas.FrameRect(R);
+end;
+{$ENDIF}
 
 procedure TCustomToolbarX2.FreeGroupInfo(const List: TList);
 var

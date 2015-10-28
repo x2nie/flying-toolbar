@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -34,13 +34,10 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="1">
       <Item1>
-        <PackageName Value="GR32_L"/>
-      </Item1>
-      <Item2>
         <PackageName Value="LCL"/>
-      </Item2>
+      </Item1>
     </RequiredPackages>
     <Units Count="5">
       <Unit0>
@@ -53,7 +50,6 @@
         <ComponentName Value="DemoForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Demo1"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\source\TBx2_Button.pas"/>
@@ -62,12 +58,10 @@
       <Unit3>
         <Filename Value="..\source\TBx2_Toolbar.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TBx2_Toolbar"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\source\TBx2.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TBx2"/>
       </Unit4>
     </Units>
   </ProjectOptions>
@@ -90,12 +84,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

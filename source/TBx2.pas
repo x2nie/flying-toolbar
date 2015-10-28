@@ -43,7 +43,9 @@ uses
 {$ENDIF}
   Classes, Controls, Forms, Graphics, ExtCtrls {shape of floating offscreen},
   ImgList,
+{$IFDEF TBX2_GR32}
   GR32, GR32_Image,
+{$ENDIF}
   TBx2_Const;
 
 
@@ -62,8 +64,9 @@ type
     Bar: TCustomToolWindowX2) of object;
   TRequestDockEvent = procedure(Sender: TObject; Bar: TCustomToolWindowX2;
     var Accept: Boolean) of object;
-  
-  TDockX2 = class(TCustomPaintBox32)
+
+
+  TDockX2 = class({$IFDEF TBX2_GR32}TCustomPaintBox32{$ELSE}TCustomPanel{$ENDIF})
   private
     FPosition: TDockPosition;
     FAllowDrag: Boolean;
@@ -106,7 +109,12 @@ type
   protected
     procedure AlignControls (AControl: TControl; var Rect: TRect); override;  
     //procedure Loaded; override; tcustompaintbox = public
+    {$IFDEF TBX2_GR32}
     procedure DoPaintBuffer; override;
+    {$ELSE}
+    procedure Paint;override;
+    {$ENDIF}
+
     {$IFNDEF TBX2_DRAGDROP}
     procedure DoDockOver(Source: TDragDockObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
@@ -181,7 +189,7 @@ type
   TPositionWriteStringProc = procedure(const ToolbarName, Value, Data: String;
     const ExtraData: Pointer);
 
-  TCustomToolWindowX2 = class(TCustomPaintBox32)
+  TCustomToolWindowX2 = class({$IFDEF TBX2_GR32}TCustomPaintBox32{$ELSE}TCustomPanel{$ENDIF})
   private
     FActivateParent, FHideWhenInactive, FCloseButton, FCloseButtonWhenDocked,
       FFullSize, FResizable, FShowCaption, FUseLastDock: Boolean;
@@ -259,7 +267,12 @@ type
     procedure CustomArrangeControls (const PreviousDockType: TDockType;
       const DockingTo: TDockX2; const Resize: Boolean);
     procedure DoMove; dynamic;
+    {$IFDEF TBX2_GR32}
     procedure DoPaintBuffer; override;
+    {$ELSE}
+    procedure Paint;override;
+    {$ENDIF}
+
     procedure GetParams (var Params: TToolWindowParams); dynamic;
 
     procedure DoDockChangingHidden (DockingTo: TDockX2); dynamic;
@@ -1238,6 +1251,7 @@ begin
 end;
 {$ENDIF}
 
+{$IFDEF TBX2_GR32}
 procedure TDockX2.DoPaintBuffer;
 var
   R, R2: TRect;
@@ -1246,6 +1260,27 @@ begin
   inherited;
   Buffer.Clear(Color32(self.Color));
   with Buffer.Canvas do begin
+    R := ClientRect;
+
+    { Draw dotted border in design mode }
+    if csDesigning in ComponentState then begin
+      Pen.Style := psDot;
+      Pen.Color := clBtnShadow;
+      Brush.Style := bsClear;
+      Rectangle (R.Left, R.Top, R.Right, R.Bottom);
+      Pen.Style := psSolid;
+      InflateRect (R, -1, -1);
+    end;
+end;
+{$ELSE}
+procedure TDockX2.Paint;
+var
+  R, R2: TRect;
+  P1, P2: TPoint;
+begin
+  inherited;
+  //Buffer.Clear(Color32(self.Color));
+  with Canvas do begin
     R := ClientRect;
 
     { Draw dotted border in design mode }
@@ -1270,6 +1305,8 @@ begin
     end;}
   end;
 end;
+{$ENDIF}
+
 
 procedure TDockX2.EndUpdate;
 begin
@@ -1578,13 +1615,21 @@ begin
   if Assigned(FOnMove) then
     FOnMove (Self);
 end;
-
+{$IFDEF TBX2_GR32}
 procedure TCustomToolWindowX2.DoPaintBuffer;
 begin
   inherited;
   Buffer.Clear(Color32(Self.Color));
   DrawDockedNCArea;
 end;
+{$else}
+procedure TCustomToolWindowX2.Paint;
+begin
+  inherited;
+  //Buffer.Clear(Color32(Self.Color));
+  DrawDockedNCArea;
+end;
+{$ENDIF}
 
 procedure TCustomToolWindowX2.DrawDockedNCArea;
 { Redraws all the non-client area of the toolbar when it is docked. }
@@ -1617,7 +1662,12 @@ begin
   else}
 {$ENDIF}
     //DC := ADC;
+    {$IFDEF TBX2_GR32}
     DC := Buffer.Canvas.Handle;
+    {$ELSE}
+    DC := Canvas.Handle;
+    {$ENDIF}
+
   try
     { Use update region }
     //if not DrawToDC then  SelectNCUpdateRgn (Handle, DC, Clip);
@@ -3119,7 +3169,7 @@ begin
   //inherited;
   CreateNew (AOwner {$IFDEF VER93} , 0 {$ENDIF});
   //Visible := True;
-  BorderStyle := bsSizeable;
+  BorderStyle := bsToolWindow;
   DragKind := dkDock;
   DragMode := dmAutomatic;
 end;
