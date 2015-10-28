@@ -1,0 +1,46 @@
+package TBx2_D7;
+
+{$R *.res}
+{$R '..\TBx2_Reg.dcr'}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'Toolbench X2'}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcl,
+  GR32_D7,
+  designide,
+  vclactnband,
+  vclx;
+
+contains
+  TBx2 in '..\TBx2.pas',
+  TBx2_Button in '..\TBx2_Button.pas',
+  TBx2_Common in '..\TBx2_Common.pas',
+  TBx2_Const in '..\TBx2_Const.pas',
+  TBx2_Toolbar in '..\TBx2_Toolbar.pas',
+  TBx2_Reg in '..\TBx2_Reg.pas',
+  LazMessages in '..\LazMessages.pas';
+
+end.

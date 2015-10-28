@@ -1,0 +1,29 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = Project1.exe DemoD.exe dockex.exe docking_del_laz.exe
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+Project1.exe: ..\Demo2\Project1.dpr
+  $(DCC)
+
+DemoD.exe: ..\Demo (Delphi)\DemoD.dpr
+  $(DCC)
+
+dockex.exe: C:\Program Files (x86)\Borland\Delphi7\Demos\Docking\dockex.dpr
+  $(DCC)
+
+docking_del_laz.exe: ..\Delphi-Docking-from-Laz\docking_del_laz.dpr
+  $(DCC)
+
+
