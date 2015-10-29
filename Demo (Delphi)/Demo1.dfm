@@ -1,5 +1,5 @@
 object DemoForm: TDemoForm
-  Left = 547
+  Left = 730
   Top = 199
   Width = 594
   Height = 398
@@ -19,12 +19,12 @@ object DemoForm: TDemoForm
     Left = 0
     Top = 0
     Width = 586
-    Height = 106
+    Height = 104
     object EditToolbar: TToolbarX2
       Left = 456
       Top = 0
       Width = 258
-      Height = 28
+      Height = 26
       Cursor = crSizeAll
       Caption = 'Edit'
       Color = clLime
@@ -35,7 +35,7 @@ object DemoForm: TDemoForm
       TabOrder = 1
       object FontButton: TToolbarButtonX2
         Left = 13
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Font'
@@ -48,7 +48,7 @@ object DemoForm: TDemoForm
       end
       object LeftButton: TToolbarButtonX2
         Left = 187
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Align Left'
@@ -58,7 +58,7 @@ object DemoForm: TDemoForm
       end
       object CenterButton: TToolbarButtonX2
         Left = 210
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Align Center'
@@ -67,7 +67,7 @@ object DemoForm: TDemoForm
       end
       object RightButton: TToolbarButtonX2
         Left = 233
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Align Right'
@@ -76,7 +76,7 @@ object DemoForm: TDemoForm
       end
       object cbbFont: TComboBox
         Left = 36
-        Top = 3
+        Top = 2
         Width = 145
         Height = 21
         ItemHeight = 13
@@ -85,8 +85,8 @@ object DemoForm: TDemoForm
       end
     end
     object SampleToolbar: TToolbarX2
-      Left = 565
-      Top = 28
+      Left = 317
+      Top = 26
       Width = 316
       Height = 26
       Cursor = crSizeAll
@@ -146,7 +146,7 @@ object DemoForm: TDemoForm
     end
     object MainToolbar: TToolbarX2
       Left = 0
-      Top = 80
+      Top = 78
       Width = 109
       Height = 26
       Cursor = crSizeAll
@@ -193,10 +193,10 @@ object DemoForm: TDemoForm
       end
     end
     object ToolbarX21: TToolbarX2
-      Left = 248
+      Left = 109
       Top = 0
       Width = 208
-      Height = 28
+      Height = 26
       Cursor = crSizeAll
       Caption = 'Main'
       Color = clAqua
@@ -211,7 +211,7 @@ object DemoForm: TDemoForm
       TabOrder = 3
       object ToolbarButtonX21: TToolbarButtonX2
         Left = 10
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'New'
@@ -219,7 +219,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX22: TToolbarButtonX2
         Left = 33
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Open'
@@ -227,7 +227,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX23: TToolbarButtonX2
         Left = 56
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Save'
@@ -239,7 +239,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX24: TToolbarButtonX2
         Left = 85
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Print'
@@ -247,7 +247,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX25: TToolbarButtonX2
         Left = 108
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Print Preview'
@@ -259,7 +259,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX26: TToolbarButtonX2
         Left = 137
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Cut'
@@ -267,7 +267,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX27: TToolbarButtonX2
         Left = 160
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Copy'
@@ -275,7 +275,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX28: TToolbarButtonX2
         Left = 183
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Paste'
@@ -283,8 +283,8 @@ object DemoForm: TDemoForm
       end
     end
     object ToolbarX22: TToolbarX2
-      Left = 456
-      Top = 28
+      Left = 0
+      Top = 26
       Width = 109
       Height = 26
       Cursor = crSizeAll
@@ -334,7 +334,7 @@ object DemoForm: TDemoForm
       Left = 139
       Top = 0
       Width = 109
-      Height = 28
+      Height = 26
       Cursor = crSizeAll
       Caption = 'Main'
       Color = 16674157
@@ -348,7 +348,7 @@ object DemoForm: TDemoForm
       TabOrder = 5
       object ToolbarButtonX213: TToolbarButtonX2
         Left = 16
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Undo'
@@ -357,7 +357,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX214: TToolbarButtonX2
         Left = 39
-        Top = 3
+        Top = 2
         Width = 34
         Height = 22
         Hint = 'Redo'
@@ -368,7 +368,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX215: TToolbarButtonX2
         Left = 73
-        Top = 3
+        Top = 2
         Width = 34
         Height = 22
         Hint = 'Redo'
@@ -379,7 +379,7 @@ object DemoForm: TDemoForm
     end
     object ToolbarX24: TToolbarX2
       Left = 477
-      Top = 54
+      Top = 52
       Width = 109
       Height = 26
       Cursor = crSizeAll
@@ -426,10 +426,10 @@ object DemoForm: TDemoForm
       end
     end
     object ToolbarX25: TToolbarX2
-      Left = 0
+      Left = -77
       Top = 0
       Width = 139
-      Height = 80
+      Height = 26
       Cursor = crSizeAll
       Caption = 'Main'
       Color = clGray
@@ -444,7 +444,7 @@ object DemoForm: TDemoForm
       TabOrder = 7
       object ToolbarButtonX219: TToolbarButtonX2
         Left = 10
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'New'
@@ -452,7 +452,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX220: TToolbarButtonX2
         Left = 33
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Open'
@@ -464,7 +464,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX222: TToolbarButtonX2
         Left = 62
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Print'
@@ -472,7 +472,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX223: TToolbarButtonX2
         Left = 85
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Print Preview'
@@ -484,7 +484,7 @@ object DemoForm: TDemoForm
       end
       object ToolbarButtonX226: TToolbarButtonX2
         Left = 114
-        Top = 3
+        Top = 2
         Width = 23
         Height = 22
         Hint = 'Paste'
@@ -494,16 +494,16 @@ object DemoForm: TDemoForm
   end
   object LeftDock: TDockX2
     Left = 0
-    Top = 106
+    Top = 104
     Width = 9
-    Height = 217
+    Height = 211
     Position = dpLeft
   end
   object Memo: TMemo
     Left = 9
-    Top = 106
+    Top = 104
     Width = 568
-    Height = 217
+    Height = 211
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -536,21 +536,21 @@ object DemoForm: TDemoForm
   end
   object RightDock: TDockX2
     Left = 577
-    Top = 106
+    Top = 104
     Width = 9
-    Height = 217
+    Height = 211
     Position = dpRight
   end
   object BottomDock: TDockX2
     Left = 0
-    Top = 323
+    Top = 315
     Width = 586
     Height = 9
     Position = dpBottom
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 332
+    Top = 324
     Width = 586
     Height = 20
     Panels = <

@@ -31,7 +31,7 @@ unit TBx2;
 interface
 
 {$DEFINE TB97DisableLock}
-{$DEFINE TBX2_DRAGDROP}
+{.$DEFINE TBX2_DRAGDROP}
 {$I TBx2_Ver.inc}
 
 uses
@@ -46,6 +46,14 @@ uses
 {$IFDEF TBX2_GR32}
   GR32, GR32_Image,
 {$ENDIF}
+
+//SURFACE BACKEND
+{$IFDEF FPC}
+  TBx2_LCL,
+{$ELSE}
+  TBx2_VCL7,
+{$ENDIF}
+
   TBx2_Const;
 
 
@@ -66,7 +74,8 @@ type
     var Accept: Boolean) of object;
 
 
-  TDockX2 = class({$IFDEF TBX2_GR32}TCustomPaintBox32{$ELSE}TCustomPanel{$ENDIF})
+  //TDockX2 = class({$IFDEF TBX2_GR32}TCustomPaintBox32{$ELSE}TCustomPanel{$ENDIF})
+  TDockX2 = class(TDockX2Ctrl)
   private
     FPosition: TDockPosition;
     FAllowDrag: Boolean;
@@ -189,7 +198,8 @@ type
   TPositionWriteStringProc = procedure(const ToolbarName, Value, Data: String;
     const ExtraData: Pointer);
 
-  TCustomToolWindowX2 = class({$IFDEF TBX2_GR32}TCustomPaintBox32{$ELSE}TCustomPanel{$ENDIF})
+  //TCustomToolWindowX2 = class({$IFDEF TBX2_GR32}TCustomPaintBox32{$ELSE}TCustomPanel{$ENDIF})
+  TCustomToolWindowX2 = class(TDockX2Ctrl)
   private
     FActivateParent, FHideWhenInactive, FCloseButton, FCloseButtonWhenDocked,
       FFullSize, FResizable, FShowCaption, FUseLastDock: Boolean;
@@ -207,7 +217,7 @@ type
     FParams: TToolWindowParams;
     FNonClientWidth, FNonClientHeight: Integer;
     { Misc. }
-    FUpdatingBounds,           { Incremented while internally changing the bounds. This allows
+    {FUpdatingBounds,}           { Incremented while internally changing the bounds. This allows
                                  it to move the toolbar freely in design mode and prevents the
                                  SizeChanging protected method from begin called }
     FDisableArrangeControls,   { Incremented to disable ArrangeControls }
@@ -1103,7 +1113,7 @@ begin
           with T do
             if (FDockRow = LCurrentRow)
             and ToolbarVisibleOnDock(T) then begin
-              Inc (FUpdatingBounds);
+              DisableAutoSizing;
               try
                 if not LeftRight then begin
                   J := Width;
@@ -1135,7 +1145,7 @@ begin
                   SetBounds (CurRowPixel, NewDockPos[I], CurBarSize, J);
                 end;
               finally
-                Dec (FUpdatingBounds);
+                EnableAutoSizing;
               end;
             end;
         end;
@@ -1590,12 +1600,13 @@ begin
         Inc (X, FNonClientWidth);
         Inc (Y, FNonClientHeight);
         if (Width <> X) or (Height <> Y) then begin
-          Inc (FUpdatingBounds);
+          { ////
+          DisableAutoSizing;
           try
             SetBounds (Left, Top, X, Y);
           finally
-            Dec (FUpdatingBounds);
-          end;
+            EnableAutoSizing;
+          end;}
         end;
       end;
   finally
@@ -1867,11 +1878,11 @@ end;
 procedure TCustomToolWindowX2.SetBounds(ALeft, ATop, AWidth,
   AHeight: Integer);
 begin
-  if (FUpdatingBounds = 0) and ((AWidth <> Width) or (AHeight <> Height)) then
+  if (not AutoSizeDelayed) and ((AWidth <> Width) or (AHeight <> Height)) then
     SizeChanging (AWidth, AHeight);
   { This allows you to drag the toolbar around the dock at design time }
   if (csDesigning in ComponentState) and not(csLoading in ComponentState) and
-     Docked and (FUpdatingBounds = 0) and ((ALeft <> Left) or (ATop <> Top)) then begin
+     Docked and (not AutoSizeDelayed) and ((ALeft <> Left) or (ATop <> Top)) then begin
     if not(DockedTo.Position in PositionLeftOrRight) then begin
       FDockRow := DockedTo.GetDesignModeRowOf(ATop+(Height div 2));
       FDockPos := ALeft;
@@ -1887,7 +1898,7 @@ begin
   end
   else begin
     inherited;
-    if not(csLoading in ComponentState) and not Docked and (FUpdatingBounds = 0) then
+    if not(csLoading in ComponentState) and not Docked and (not AutoSizeDelayed) then
       FFloatingTopLeft := BoundsRect.TopLeft;
   end;
 end;
@@ -2071,7 +2082,7 @@ begin
         OldDockedTo.BeginUpdate;
       if Assigned(NewDockedTo) then
         NewDockedTo.BeginUpdate;
-      Inc (FUpdatingBounds);
+      DisableAutoSizing;
       try
         if Assigned(AParent) then begin
           DoDockChangingHidden (NewDockedTo);
@@ -2135,7 +2146,7 @@ begin
           FLastDockTypeSet := True;
         end;
       finally
-        Dec (FUpdatingBounds);
+        EnableAutoSizing;
         if Assigned(NewDockedTo) then
           NewDockedTo.EndUpdate;
         if Assigned(OldDockedTo) then
@@ -2932,8 +2943,7 @@ begin
   with GetFloatingBorderSize do begin
     TopLeft.X := X;
     TopLeft.Y := Y;
-    if ShowCaption then
-      Inc (TopLeft.Y, GetSmallCaptionHeight);
+    ///if ShowCaption then      Inc (TopLeft.Y, GetSmallCaptionHeight);
     BottomRight.X := X;
     BottomRight.Y := Y;
   end;
@@ -3021,7 +3031,7 @@ begin
   if R = nil then
     R := @Temp;
   if not Docked then begin
-    GetFloatingNCArea (TL, BR);
+    {GetFloatingNCArea (TL, BR);
     FNonClientWidth := TL.X + BR.X;
     FNonClientHeight := TL.Y + BR.Y;
     with R^ do begin
@@ -3029,7 +3039,7 @@ begin
       Inc (Top, TL.Y);
       Dec (Right, BR.X);
       Dec (Bottom, BR.Y);
-    end;
+    end;}
   end
   else begin
     InflateRect (R^, -DockedBorderSize, -DockedBorderSize);
