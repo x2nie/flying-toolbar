@@ -1,6 +1,6 @@
 object DemoForm: TDemoForm
-  Left = 730
-  Top = 199
+  Left = 770
+  Top = 281
   Width = 594
   Height = 398
   Caption = 'ToolbarX2 Demo'

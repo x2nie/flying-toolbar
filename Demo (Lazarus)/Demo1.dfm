@@ -18,86 +18,21 @@ object DemoForm: TDemoForm
     Height = 104
     Top = 0
     Width = 453
-    object EditToolbar: TToolbarX2
+    object SampleToolbar: TToolbarX2
       Cursor = crSizeAll
-      Left = 0
+      Left = 137
       Height = 26
       Top = 26
-      Width = 258
-      Caption = 'Edit'
-      Color = clLime
-      DockPos = 0
+      Width = 316
+      Caption = 'Sample'
+      Color = clFuchsia
+      CloseButtonWhenDocked = True
+      DockPos = 466
       DockRow = 1
       ParentShowHint = False
       PopupMenu = ToolbarPopupMenu
       ShowHint = True
       TabOrder = 1
-      object FontButton: TToolbarButtonX2
-        Left = 13
-        Height = 22
-        Hint = 'Font'
-        Top = 2
-        Width = 23
-        ImageIndex = 0
-        OnClick = FontButtonClick
-      end
-      object EditSep1: TToolbarSepX2
-        Left = 181
-        Top = 2
-      end
-      object LeftButton: TToolbarButtonX2
-        Left = 187
-        Height = 22
-        Hint = 'Align Left'
-        Top = 2
-        Width = 23
-        GroupIndex = 1
-        Down = True
-        ImageIndex = 0
-      end
-      object CenterButton: TToolbarButtonX2
-        Left = 210
-        Height = 22
-        Hint = 'Align Center'
-        Top = 2
-        Width = 23
-        GroupIndex = 1
-        ImageIndex = 0
-      end
-      object RightButton: TToolbarButtonX2
-        Left = 233
-        Height = 22
-        Hint = 'Align Right'
-        Top = 2
-        Width = 23
-        GroupIndex = 1
-        ImageIndex = 0
-      end
-      object cbbFont: TComboBox
-        Left = 36
-        Height = 21
-        Top = 2
-        Width = 145
-        ItemHeight = 13
-        TabOrder = 0
-        Text = 'cbbFont'
-      end
-    end
-    object SampleToolbar: TToolbarX2
-      Cursor = crSizeAll
-      Left = 0
-      Height = 26
-      Top = 52
-      Width = 316
-      Caption = 'Sample'
-      Color = clFuchsia
-      CloseButtonWhenDocked = True
-      DockPos = 0
-      DockRow = 2
-      ParentShowHint = False
-      PopupMenu = ToolbarPopupMenu
-      ShowHint = True
-      TabOrder = 2
       object SampleSep1: TToolbarSepX2
         Left = 124
         Top = 2
@@ -145,15 +80,15 @@ object DemoForm: TDemoForm
     end
     object MainToolbar: TToolbarX2
       Cursor = crSizeAll
-      Left = 0
+      Left = 367
       Height = 26
-      Top = 78
+      Top = 52
       Width = 86
       Caption = 'Main'
       Color = clYellow
       CloseButtonWhenDocked = True
-      DockPos = 0
-      DockRow = 3
+      DockPos = 458
+      DockRow = 2
       DragHandleStyle = dhSingle
       ParentShowHint = False
       PopupMenu = ToolbarPopupMenu
@@ -194,7 +129,7 @@ object DemoForm: TDemoForm
       PopupMenu = ToolbarPopupMenu
       Resizable = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 2
       object ToolbarButtonX21: TToolbarButtonX2
         Left = 10
         Height = 22
@@ -268,6 +203,71 @@ object DemoForm: TDemoForm
         ImageIndex = 0
       end
     end
+    object EditToolbar: TToolbarX2
+      Cursor = crSizeAll
+      Left = 0
+      Height = 26
+      Top = 78
+      Width = 258
+      Caption = 'Edit'
+      Color = clLime
+      DockPos = 0
+      DockRow = 3
+      ParentShowHint = False
+      PopupMenu = ToolbarPopupMenu
+      ShowHint = True
+      TabOrder = 3
+      object FontButton: TToolbarButtonX2
+        Left = 13
+        Height = 22
+        Hint = 'Font'
+        Top = 2
+        Width = 23
+        ImageIndex = 0
+        OnClick = FontButtonClick
+      end
+      object EditSep1: TToolbarSepX2
+        Left = 181
+        Top = 2
+      end
+      object LeftButton: TToolbarButtonX2
+        Left = 187
+        Height = 22
+        Hint = 'Align Left'
+        Top = 2
+        Width = 23
+        GroupIndex = 1
+        Down = True
+        ImageIndex = 0
+      end
+      object CenterButton: TToolbarButtonX2
+        Left = 210
+        Height = 22
+        Hint = 'Align Center'
+        Top = 2
+        Width = 23
+        GroupIndex = 1
+        ImageIndex = 0
+      end
+      object RightButton: TToolbarButtonX2
+        Left = 233
+        Height = 22
+        Hint = 'Align Right'
+        Top = 2
+        Width = 23
+        GroupIndex = 1
+        ImageIndex = 0
+      end
+      object cbbFont: TComboBox
+        Left = 36
+        Height = 21
+        Top = 2
+        Width = 145
+        ItemHeight = 13
+        TabOrder = 0
+        Text = 'cbbFont'
+      end
+    end
   end
   object LeftDock: TDockX2
     Left = 0
@@ -326,7 +326,7 @@ object DemoForm: TDemoForm
   object ToolbarPopupMenu: TPopupMenu
     OnPopup = ToolbarPopupMenuPopup
     left = 384
-    top = 64
+    top = 112
     object TPMain: TMenuItem
       Caption = '&Main'
       Checked = True
@@ -344,8 +344,8 @@ object DemoForm: TDemoForm
     end
   end
   object MainMenu: TMainMenu
-    left = 352
-    top = 64
+    left = 344
+    top = 112
     object FMenu: TMenuItem
       Caption = '&File'
       object FExit: TMenuItem

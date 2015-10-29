@@ -31,7 +31,7 @@ unit TBx2;
 interface
 
 {$DEFINE TB97DisableLock}
-{.$DEFINE TBX2_DRAGDROP}
+{$DEFINE TBX2_DRAGDROP}
 {$I TBx2_Ver.inc}
 
 uses
@@ -1684,13 +1684,14 @@ begin
         Inc (X, FNonClientWidth);
         Inc (Y, FNonClientHeight);
         if (Width <> X) or (Height <> Y) then begin
-          { ////
+          {$IFDEF TBX2_DRAGDROP}
           DisableAutoSizing;
           try
             SetBounds (Left, Top, X, Y);
           finally
             EnableAutoSizing;
-          end;}
+          end;
+          {$ENDIF}
         end;
       end;
   finally

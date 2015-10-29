@@ -3,7 +3,8 @@ program DemoD;
 uses
   Controls,
   Forms,
-  Demo1 in 'Demo1.pas' {DemoForm};
+  Demo1 in 'Demo1.pas' {DemoForm},
+  TBx2_LCL in '..\source\TBx2_LCL.pas';
 
 {$R *.RES}
 
