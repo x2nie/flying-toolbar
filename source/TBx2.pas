@@ -128,6 +128,10 @@ type
     procedure DoDockOver(Source: TDragDockObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
     {$ENDIF}
+    {$IFNDEF TBX2_DRAGDROP}
+    procedure PositionDockRect(DragDockObject: TDragDockObject); override;
+    {$ENDIF}
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure Loaded; override; //tcustompaintbox = public
@@ -284,6 +288,10 @@ type
     {$ENDIF}
 
     procedure GetParams (var Params: TToolWindowParams); dynamic;
+
+    {$IFNDEF TBX2_DRAGDROP}
+    //procedure PositionDockRect(DragDockObject: TDragDockObject); override;
+    {$ENDIF}
 
     procedure DoDockChangingHidden (DockingTo: TDockX2); dynamic;
     procedure GetBarSize (var ASize: Integer; const DockType: TDockType); virtual; abstract;
@@ -1256,8 +1264,9 @@ end;
 procedure TDockX2.DoDockOver(Source: TDragDockObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
+  //Accept := True;
+  Accept := Source.Control is TCustomToolWindowX2;
   inherited;
-  Accept := True;
 end;
 {$ENDIF}
 
@@ -1317,7 +1326,77 @@ begin
 end;
 {$ENDIF}
 
+{$IFNDEF TBX2_DRAGDROP}
+procedure TDockX2.PositionDockRect(
+  DragDockObject: TDragDockObject);
+var
+  NewWidth, NewHeight: Integer;
+  TempX, TempY: Double;
+  Size: TPoint;
 
+var
+  //MouseOverDock : TDockX2;
+  MoveRect : TRect;
+  DPoint: TPoint;
+  Tb : TCustomToolWindowX2;
+begin
+  with DragDockObject do
+  begin
+    //debugln(['TCustomtoolwin.PositionDockRect="',DbgSName(TControl(DragTarget))]);
+    if (Control is TCustomToolWindowX2) then
+    begin
+      Tb := TCustomToolWindowX2(Control);
+      //MouseOverDock := TDockX2(DragTarget);
+      DPoint := Point(Tb.Width-1, Tb.Height-1);
+      if Position in Tb.DockableTo then
+        Size := Tb.OrderControls(False, GetDockTypeOf(Tb.DockedTo), Self)
+      else
+        Size := Tb.ClientRect.BottomRight;
+
+      // Drag position for dock rect is scaled relative to control's click point.
+      TempX := DragPos.X - ((Size.X) * MouseDeltaX);
+      TempY := DragPos.Y - ((Size.Y) * MouseDeltaY);
+
+      MoveRect := Bounds(DragPos.X-MulDiv(Size.X-1, DragPos.X, DPoint.X),
+          DragPos.Y-MulDiv(Size.Y-1, DragPos.Y, DPoint.Y),
+          Size.X, Size.Y);
+
+      MoveRect := Bounds(Round(TempX), Round(TempY),
+          Size.X, Size.Y);
+
+      DockRect := MoveRect;
+      
+      //AddDockedNCAreaToSize (Size, Dock.Position in PositionLeftOrRight);
+    end
+    else
+       inherited;
+    {if (DragTarget = nil) or (not TWinControl(DragTarget).UseDockManager) then
+    begin
+      NewWidth := Control.UndockWidth;
+      NewHeight := Control.UndockHeight;
+      // Drag position for dock rect is scaled relative to control's click point.
+      TempX := DragPos.X - ((NewWidth) * FMouseDeltaX);
+      TempY := DragPos.Y - ((NewHeight) * FMouseDeltaY);
+      with FDockRect do
+      begin
+        Left := Round(TempX);
+        Top := Round(TempY);
+        Right := Left + NewWidth;
+        Bottom := Top + NewHeight;
+      end;
+      // Allow DragDockObject final say on this new dock rect
+      AdjustDockRect(FDockRect);
+    end
+    else begin
+      GetWindowRect(TWinControl(DragTarget).Handle, FDockRect);
+      if TWinControl(DragTarget).UseDockManager and
+        (TWinControl(DragTarget).DockManager <> nil) then
+        TWinControl(DragTarget).DockManager.PositionDockRect(Control,
+          DropOnControl, DropAlign, FDockRect);
+    end;}
+  end;
+end;
+{$ENDIF}
 procedure TDockX2.EndUpdate;
 begin
   Dec (FDisableArrangeToolbars);
@@ -2370,6 +2449,8 @@ begin
       Value.FreeNotification (Self);
   end;
 end;
+
+
 
 {$IFDEF TBX2_DRAGDROP}
 procedure TCustomToolWindowX2.BeginMoving(const InitX, InitY: Integer);

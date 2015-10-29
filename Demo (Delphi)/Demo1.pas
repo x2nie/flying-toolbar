@@ -83,6 +83,7 @@ type
     ToolbarButtonX223: TToolbarButtonX2;
     ToolbarSepX24: TToolbarSepX2;
     ToolbarButtonX226: TToolbarButtonX2;
+    Dump1: TMenuItem;
     procedure FExitClick(Sender: TObject);
     procedure VTMainClick(Sender: TObject);
     procedure VTEditClick(Sender: TObject);
@@ -97,6 +98,7 @@ type
     procedure DeleteButtonClick(Sender: TObject);
     procedure SampleToolWindowVisibleChanged(Sender: TObject);
     procedure ToolWinButtonClick(Sender: TObject);
+    procedure Dump1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -202,6 +204,34 @@ begin
   ListBox.ItemIndex := SaveItemIndex;
   DeleteButton.Enabled := ListBox.ItemIndex <> -1;}
   
+end;
+
+procedure TDemoForm.Dump1Click(Sender: TObject);
+var S : TStringList;
+
+  procedure Dump(C: TWinControl; Level:integer=0);
+  var i : integer;
+    sep : string;
+  begin
+    sep := '';
+    for i := 0 to level -1 do
+    begin
+         sep := sep + '      ';
+    end;
+    S.Add(format('%s%s : %s',[sep,C.Name, C.ClassName]));
+    for i := 0 to C.ControlCount - 1 do
+    begin
+         if C.Controls[i] is TWinControl then
+         Dump(TWinControl(C.Controls[i]), Level +1);
+    end;
+  end;
+
+begin
+     S := TStringList.Create;
+     Dump(self);
+     self.Memo.Lines.Assign(s);
+     s.free;           
+
 end;
 
 end.

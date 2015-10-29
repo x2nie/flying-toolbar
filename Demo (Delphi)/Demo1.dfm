@@ -611,6 +611,10 @@ object DemoForm: TDemoForm
         OnClick = VStatusBarClick
       end
     end
+    object Dump1: TMenuItem
+      Caption = 'Dump!'
+      OnClick = Dump1Click
+    end
   end
   object DropPopupMenu: TPopupMenu
     Left = 320

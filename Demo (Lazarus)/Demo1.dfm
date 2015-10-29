@@ -1,7 +1,7 @@
 object DemoForm: TDemoForm
-  Left = 802
+  Left = 630
   Height = 337
-  Top = 284
+  Top = 194
   Width = 453
   Caption = 'ToolbarX2 Demo'
   ClientHeight = 317
@@ -275,7 +275,6 @@ object DemoForm: TDemoForm
     Top = 104
     Width = 9
     Position = dpLeft
-    OnRequestDock = LeftDockRequestDock
   end
   object Memo: TMemo
     Left = 9
@@ -376,6 +375,10 @@ object DemoForm: TDemoForm
         Caption = '&Status Bar'
         OnClick = VStatusBarClick
       end
+    end
+    object MenuItem1: TMenuItem
+      Caption = 'Dump!'
+      OnClick = MenuItem1Click
     end
   end
   object DropPopupMenu: TPopupMenu

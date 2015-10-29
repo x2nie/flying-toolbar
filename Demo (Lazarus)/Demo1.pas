@@ -23,6 +23,7 @@ type
 
   TDemoForm = class(TForm)
     Memo: TMemo;
+    MenuItem1: TMenuItem;
     ToolbarPopupMenu: TPopupMenu;
     TopDock: TDockX2;
     MainMenu: TMainMenu;
@@ -74,8 +75,7 @@ type
     ToolbarButtonX27: TToolbarButtonX2;
     ToolbarButtonX28: TToolbarButtonX2;
     procedure FExitClick(Sender: TObject);
-    procedure LeftDockRequestDock(Sender: TObject; Bar: TCustomToolWindowX2;
-      var Accept: Boolean);
+    procedure MenuItem1Click(Sender: TObject);
     procedure VTMainClick(Sender: TObject);
     procedure VTEditClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -120,10 +120,31 @@ begin
   Close;
 end;
 
-procedure TDemoForm.LeftDockRequestDock(Sender: TObject;
-  Bar: TCustomToolWindowX2; var Accept: Boolean);
-begin
+procedure TDemoForm.MenuItem1Click(Sender: TObject);
+var S : TStringList;
 
+  procedure Dump(C: TWinControl; Level:integer=0);
+  var i : integer;
+    sep : string;
+  begin
+    sep := '';
+    for i := 0 to level -1 do
+    begin
+         sep := sep + '      ';
+    end;
+    S.Add(format('%s%s : %s',[sep,C.Name, C.ClassName]));
+    for i := 0 to C.ControlCount - 1 do
+    begin
+         if C.Controls[i] is TWinControl then
+         Dump(TWinControl(C.Controls[i]), Level +1);
+    end;
+  end;
+
+begin
+     S := TStringList.Create;
+     Dump(self);
+     self.Memo.Lines.Assign(s);
+     s.free;
 end;
 
 procedure TDemoForm.ToolbarPopupMenuPopup(Sender: TObject);

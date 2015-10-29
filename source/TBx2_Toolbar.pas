@@ -873,4 +873,6 @@ begin
   TCustomToolbarX2(Parent).MouseDown (Button, Shift, P.X, P.Y);
 end;
 
+
+
 end.

@@ -34,12 +34,15 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="TBx2_Lazarus"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="2">
       <Unit0>
         <Filename Value="DemoD.dpr"/>
         <IsPartOfProject Value="True"/>
@@ -51,18 +54,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="..\source\TBx2_Button.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\source\TBx2_Toolbar.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\source\TBx2.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -70,7 +61,6 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="..\source"/>
-      <OtherUnitFiles Value="..\source"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

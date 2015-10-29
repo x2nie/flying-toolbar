@@ -7,7 +7,8 @@ unit TBx2_Lazarus;
 interface
 
 uses
-  TBx2_Reg, TBx2_Toolbar, TBx2, TBx2_Common, TBx2_Const, LazarusPackageIntf;
+  TBx2_Reg, TBx2_Toolbar, TBx2, TBx2_Common, TBx2_Const, TBx2_LCL, 
+  LazarusPackageIntf;
 
 implementation
 
