@@ -1354,8 +1354,13 @@ begin
         Size := Tb.ClientRect.BottomRight;
 
       // Drag position for dock rect is scaled relative to control's click point.
+      {$IFNDEF FPC}
       TempX := DragPos.X - ((Size.X) * MouseDeltaX);
       TempY := DragPos.Y - ((Size.Y) * MouseDeltaY);
+      {$ELSE}
+      TempX := DragPos.X - ((Size.X) );
+      TempY := DragPos.Y - ((Size.Y) );
+      {$ENDIF}
 
       MoveRect := Bounds(DragPos.X-MulDiv(Size.X-1, DragPos.X, DPoint.X),
           DragPos.Y-MulDiv(Size.Y-1, DragPos.Y, DPoint.Y),
