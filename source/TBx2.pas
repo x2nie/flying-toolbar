@@ -31,7 +31,8 @@ unit TBx2;
 interface
 
 {$DEFINE TB97DisableLock}
-{$DEFINE TBX2_DRAGDROP}
+{.$DEFINE TBX2_DRAGDROP}
+{$DEFINE TBX2_DROPMAN}
 {$I TBx2_Ver.inc}
 
 uses
@@ -128,8 +129,10 @@ type
     procedure DoDockOver(Source: TDragDockObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
     {$ENDIF}
+    {$IFNDEF TBX2_DROPMAN}
     {$IFNDEF TBX2_DRAGDROP}
     procedure PositionDockRect(DragDockObject: TDragDockObject); override;
+    {$ENDIF}
     {$ENDIF}
 
   public
@@ -353,6 +356,28 @@ type
     property DockPos: Integer read FDockPos write SetDockPos default -1;
     property DockRow: Integer read FDockRow write SetDockRow default 0;
   published
+  end;
+
+  TX2DockManager = class(TDockManager)
+  private
+     FDockSite : TWinControl;
+  protected
+
+  public
+    constructor Create(ADockSite: TWinControl); override;
+    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
+                               var DockRect: TRect); override;
+    procedure GetControlBounds(Control: TControl;
+                               out AControlBounds: TRect); override;
+    procedure InsertControl(Control: TControl; InsertAt: TAlign;
+                            DropCtl: TControl); override;
+    procedure LoadFromStream(Stream: TStream); override;
+
+    procedure RemoveControl(Control: TControl); override;
+    procedure ResetBounds(Force: Boolean); override;
+    procedure SaveToStream(Stream: TStream); override;
+  published 
+
   end;
 
 const
@@ -1258,6 +1283,11 @@ begin
   {$IFNDEF TBX2_DRAGDROP}
   self.DockSite := True;
   {$ENDIF}
+
+  {$IFDEF TBX2_DROPMAN}
+  TX2DockManager.Create(Self);
+  DockSite := True;
+  {$ENDIF}
 end;
 
 {$IFNDEF TBX2_DRAGDROP}
@@ -1326,6 +1356,7 @@ begin
 end;
 {$ENDIF}
 
+{$IFNDEF TBX2_DROPMAN}
 {$IFNDEF TBX2_DRAGDROP}
 procedure TDockX2.PositionDockRect(
   DragDockObject: TDragDockObject);
@@ -1401,6 +1432,7 @@ begin
     end;}
   end;
 end;
+{$ENDIF}
 {$ENDIF}
 procedure TDockX2.EndUpdate;
 begin
@@ -3266,7 +3298,7 @@ begin
   //inherited;
   CreateNew (AOwner {$IFDEF VER93} , 0 {$ENDIF});
   //Visible := True;
-  BorderStyle := bsToolWindow;
+//  BorderStyle := bsToolWindow;
   DragKind := dkDock;
   DragMode := dmAutomatic;
 end;
@@ -3307,6 +3339,67 @@ end;
 procedure TFloatingDragWindow.SetBorderLen(const Value: Integer);
 begin
   FShape.Pen.Width := Value;
+end;
+
+{ TX2DockManager }
+
+constructor TX2DockManager.Create(ADockSite: TWinControl);
+begin
+// Init DockSite and DragManager.
+
+  FDockSite := ADockSite;
+  TPanel(ADockSite).DockManager := self; //cast it because properties are protected
+//reset inappropriate docking defaults - should be fixed in Controls/DragManager!
+  //DragManager.DragImmediate := False;
+  inherited Create(ADockSite);
+end;
+
+procedure TX2DockManager.GetControlBounds(Control: TControl;
+  out AControlBounds: TRect);
+begin
+  inherited;
+
+end;
+
+procedure TX2DockManager.InsertControl(Control: TControl; InsertAt: TAlign;
+  DropCtl: TControl);
+begin
+  inherited;
+
+end;
+
+procedure TX2DockManager.LoadFromStream(Stream: TStream);
+begin
+  inherited;
+
+end;
+
+
+procedure TX2DockManager.PositionDockRect(Client, DropCtl: TControl;
+  DropAlign: TAlign; var DockRect: TRect);
+var Offset : TPoint;  
+begin
+  DockRect := Rect(0, 0, FDockSite.ClientWidth, FDockSite.ClientHeight);
+  Offset:=FDockSite.ClientOrigin;
+  OffsetRect(DockRect,Offset.X,Offset.Y);
+end;
+
+procedure TX2DockManager.RemoveControl(Control: TControl);
+begin
+  inherited;
+
+end;
+
+procedure TX2DockManager.ResetBounds(Force: Boolean);
+begin
+  inherited;
+
+end;
+
+procedure TX2DockManager.SaveToStream(Stream: TStream);
+begin
+  inherited;
+
 end;
 
 end.
