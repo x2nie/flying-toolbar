@@ -407,11 +407,12 @@ begin
   with DragDockObject do begin
     Tb := TCustomToolWindowX2(Control);
     //MouseOverDock := TDockX2(DragTarget);
-    DPoint := Point(Tb.Width, Tb.Height);
+    //DPoint := Point(Tb.Width, Tb.Height);
     {if Position in Tb.DockableTo then
       Size := Tb.OrderControls(False, GetDockTypeOf(Tb.DockedTo), Self)
-    else}
-      Size := Tb.ClientRect.BottomRight;
+    else
+      Size := Tb.ClientRect.BottomRight;}
+    Size := Point(Tb.Width, Tb.Height);
 
     // Drag position for dock rect is scaled relative to control's click point.
     {$IFNDEF FPC}
