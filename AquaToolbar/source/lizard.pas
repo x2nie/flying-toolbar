@@ -21,7 +21,7 @@ uses
 {$IFDEF FPC}
   LizardBase_LCL,
 {$ELSE}
-  TBx2_VCL7,
+  LizardBase_VCL,
 {$ENDIF}
   LizardConst;
 
@@ -50,6 +50,12 @@ type
     procedure SetPosition(AValue: TDockPosition);
   protected
     procedure PaintSurface; override;
+    //procedure DockOver(Source: TDragDockObject; X, Y: Integer;
+      //                 State: TDragState; var Accept: Boolean); override;
+    procedure PositionDockRect(DragDockObject: TDragDockObject); override;
+    procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
+
+
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -76,6 +82,7 @@ type
   protected
     procedure PaintSurface; override;
     procedure ArrangeControls; virtual;
+    procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
 
 
     property DockableTo: TDockableTo read FDockableTo write FDockableTo default [dpTop, dpBottom, dpLeft, dpRight];
@@ -106,6 +113,45 @@ end;
 procedure TCustomToolWindowX2.ArrangeControls;
 begin
 
+end;
+
+procedure TCustomToolWindowX2.DoDock(NewDockSite: TWinControl; var ARect: TRect );
+begin
+  //inherited DoDock(NewDockSite, ARect);
+  if (NewDockSite = nil) then Parent := nil;
+    if NewDockSite<>nil then begin
+      //DebugLn('TControl.DoDock BEFORE Adjusting ',DbgSName(Self),' ',dbgs(ARect));
+      // adjust new bounds, so that they at least fit into the client area of
+      // its parent
+      if NewDockSite.AutoSize then begin
+        case align of
+          alLeft,
+          alRight : ARect:=Rect(0,0,Width,NewDockSite.ClientHeight);
+          alTop,
+          alBottom : ARect:=Rect(0,0,NewDockSite.ClientWidth,Height);
+        else
+          ARect:=Rect(0,0,Width,Height);
+        end;
+      end else begin
+        //LCLProc.MoveRectToFit(ARect, NewDockSite.GetLogicalClientRect);
+        ARect.TopLeft := NewDockSite.ScreenToClient(Arect.TopLeft);
+        ARect.BottomRight := NewDockSite.ScreenToClient(Arect.BottomRight);
+        // consider Align to increase chance the width/height is kept
+        case Align of
+          alLeft: OffsetRect(ARect,-ARect.Left,0);
+          alTop: OffsetRect(ARect,0,-ARect.Top);
+          alRight: OffsetRect(ARect,NewDockSite.ClientWidth-ARect.Right,0);
+          alBottom: OffsetRect(ARect,0,NewDockSite.ClientHeight-ARect.Bottom);
+        end;
+      end;
+      //DebugLn('TControl.DoDock AFTER Adjusting ',DbgSName(Self),' ',dbgs(ARect),' Align=',DbgS(Align),' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
+    end;
+    //debugln('TControl.DoDock BEFORE MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' NewRect=',dbgs(ARect));
+    if Parent<>NewDockSite then
+      BoundsRectForNewParent := ARect
+    else
+      BoundsRect := ARect;
+    //debugln('TControl.DoDock AFTER MOVE ',DbgSName(Self),' BoundsRect=',dbgs(BoundsRect),' TriedRect=',dbgs(ARect));
 end;
 
 constructor TCustomToolWindowX2.Create(AOwner: TComponent);
@@ -150,7 +196,7 @@ begin
   //if not DrawToDC then ValidateDockedNCArea;
   if {not Docked or} not HandleAllocated then Exit;
   Canvas.Brush.Color:= clRed;
-  Canvas.FillRect(0,0,10,10);
+  Canvas.FillRect(Rect(0,0,10,10));
 (*
 {$IFNDEF FPC}
   {if not DrawToDC then
@@ -343,6 +389,102 @@ begin
     end;}
   end;
 end;
+
+procedure TDockX2.PositionDockRect(DragDockObject: TDragDockObject);
+  //inherited PositionDockRect(DragDockObject);
+var
+  NewWidth, NewHeight: Integer;
+  TempX, TempY: Double;
+  Size: TPoint;
+
+var
+  //MouseOverDock : TDockX2;
+  MoveRect : TRect;
+  DPoint: TPoint;
+  Tb : TCustomToolWindowX2;
+begin
+  if (DragDockObject.Control is TCustomToolWindowX2) then
+  with DragDockObject do begin
+    Tb := TCustomToolWindowX2(Control);
+    //MouseOverDock := TDockX2(DragTarget);
+    DPoint := Point(Tb.Width, Tb.Height);
+    {if Position in Tb.DockableTo then
+      Size := Tb.OrderControls(False, GetDockTypeOf(Tb.DockedTo), Self)
+    else}
+      Size := Tb.ClientRect.BottomRight;
+
+    // Drag position for dock rect is scaled relative to control's click point.
+    {$IFNDEF FPC}
+    TempX := DragPos.X - ((Size.X) * MouseDeltaX);
+    TempY := DragPos.Y - ((Size.Y) * MouseDeltaY);
+    {$ELSE}
+    TempX := DragPos.X - ((Size.X) );
+    TempY := DragPos.Y - ((Size.Y) );
+    {$ENDIF}
+
+    {MoveRect := Bounds(DragPos.X-MulDiv(Size.X-1, DragPos.X, DPoint.X),
+        DragPos.Y-MulDiv(Size.Y-1, DragPos.Y, DPoint.Y),
+        Size.X, Size.Y);}
+
+    MoveRect := Bounds(Round(TempX), Round(TempY),
+        Size.X, Size.Y);
+
+    with MoveRect do begin
+      Left := DragPos.x;
+      Top := DragPos.y;
+      Right := Left + Size.X;
+      Bottom:= Top + Size.Y;
+    end;
+    // let user adjust dock rect
+    OffsetRect( MoveRect, -DockOffset.x, -DockOffset.y);
+    DragDockObject.DockRect := MoveRect;
+
+
+      //AddDockedNCAreaToSize (Size, Dock.Position in PositionLeftOrRight);
+  end
+  else
+    inherited;
+end;
+
+procedure TDockX2.DoAddDockClient(Client: TControl; const ARect: TRect);
+begin
+  if Client.Parent <> self Then
+    inherited DoAddDockClient(Client, ARect);
+  //Client.Align := alTop;
+  //Client.Align := AlNone;
+  Client.Align := alCustom;
+  with Arect do
+  Client.SetBounds(Left, Top, Right-Left, Bottom-TOp);
+end;
+
+(*procedure TDockX2.DockOver(Source: TDragDockObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+var R,r2 :TRect;
+  P : TPoint;
+begin
+  //inherited DockOver(Source, X, Y, State, Accept);
+
+  Accept := Source.Control is TCustomToolWindowX2;
+  if Accept then begin
+    Source.DropAlign:=alTop;
+    R2 := source.Control.BoundsRect;
+
+    //R.TopLeft
+    P := ClientToScreen(Point(X,Y));
+    OffsetRect(R2,P.X,P.Y);
+
+    P := Source.DockOffset;
+    OffsetRect(R2,-P.X,-P.Y);
+
+    R.Right := R.Left+36;
+    R.Bottom:= R.Top+26;
+
+    Source.DockRect :=  R2;
+
+  end;
+  //if State = dsDragMove then    PositionDockRect(Source);
+  DoDockOver(Source, X, Y, State, Accept);
+end;*)
 
 constructor TDockX2.Create(AOwner: TComponent);
 begin

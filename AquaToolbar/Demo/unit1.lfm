@@ -2,23 +2,33 @@ object Form1: TForm1
   Left = 272
   Height = 240
   Top = 137
-  Width = 320
+  Width = 469
   Caption = 'Form1'
   ClientHeight = 240
-  ClientWidth = 320
+  ClientWidth = 469
   LCLVersion = '1.4.0.3'
   object DockX2_1: TDockX2
     Left = 0
-    Height = 50
+    Height = 104
     Top = 0
-    Width = 320
+    Width = 469
     object ToolbarX2_1: TToolbarX2
       Cursor = crSizeAll
-      Left = 32
+      Left = 8
       Height = 50
       Top = 16
       Width = 170
       Caption = 'Aloha'
+      Color = clBtnFace
+      CloseButton = False
+    end
+    object ToolbarX2_2: TToolbarX2
+      Cursor = crSizeAll
+      Left = 226
+      Height = 50
+      Top = 16
+      Width = 74
+      Caption = 'ToolbarX2_2'
       Color = clBtnFace
       CloseButton = False
     end
