@@ -1,0 +1,26 @@
+object Form1: TForm1
+  Left = 272
+  Height = 240
+  Top = 137
+  Width = 320
+  Caption = 'Form1'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '1.4.0.3'
+  object DockX2_1: TDockX2
+    Left = 0
+    Height = 50
+    Top = 0
+    Width = 320
+    object ToolbarX2_1: TToolbarX2
+      Cursor = crSizeAll
+      Left = 32
+      Height = 50
+      Top = 16
+      Width = 170
+      Caption = 'Aloha'
+      Color = clBtnFace
+      CloseButton = False
+    end
+  end
+end

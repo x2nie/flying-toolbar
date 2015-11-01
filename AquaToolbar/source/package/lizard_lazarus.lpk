@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="Lizard_Lazarus"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value=".."/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Version Minor="1"/>
+    <Files Count="4">
+      <Item1>
+        <Filename Value="..\lizardconst.pas"/>
+        <UnitName Value="LizardConst"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\lizard.pas"/>
+        <UnitName Value="Lizard"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\lizard_toolbar.pas"/>
+        <UnitName Value="Lizard_Toolbar"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\lizard_reg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="Lizard_Reg"/>
+      </Item4>
+    </Files>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
