@@ -16,6 +16,7 @@ type
     DockX2_1: TDockX2;
     ToolbarX2_1: TToolbarX2;
     ToolbarX2_2: TToolbarX2;
+    ToolbarX2_3: TToolbarX2;
   private
     { private declarations }
   public

@@ -50,8 +50,8 @@ type
     procedure SetPosition(AValue: TDockPosition);
   protected
     procedure PaintSurface; override;
-    //procedure DockOver(Source: TDragDockObject; X, Y: Integer;
-      //                 State: TDragState; var Accept: Boolean); override;
+    procedure DockOver(Source: TDragDockObject; X, Y: Integer;
+                       State: TDragState; var Accept: Boolean); override;
     procedure PositionDockRect(DragDockObject: TDragDockObject); override;
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
 
@@ -123,7 +123,7 @@ begin
       //DebugLn('TControl.DoDock BEFORE Adjusting ',DbgSName(Self),' ',dbgs(ARect));
       // adjust new bounds, so that they at least fit into the client area of
       // its parent
-      if NewDockSite.AutoSize then begin
+      if TPanel(NewDockSite).AutoSize then begin
         case align of
           alLeft,
           alRight : ARect:=Rect(0,0,Width,NewDockSite.ClientHeight);
@@ -147,9 +147,10 @@ begin
       //DebugLn('TControl.DoDock AFTER Adjusting ',DbgSName(Self),' ',dbgs(ARect),' Align=',DbgS(Align),' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
     end;
     //debugln('TControl.DoDock BEFORE MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' NewRect=',dbgs(ARect));
+    {$IFDEF fpc}
     if Parent<>NewDockSite then
       BoundsRectForNewParent := ARect
-    else
+    else {$ENDIF}
       BoundsRect := ARect;
     //debugln('TControl.DoDock AFTER MOVE ',DbgSName(Self),' BoundsRect=',dbgs(BoundsRect),' TriedRect=',dbgs(ARect));
 end;
@@ -437,7 +438,7 @@ begin
       Bottom:= Top + Size.Y;
     end;
     // let user adjust dock rect
-    OffsetRect( MoveRect, -DockOffset.x, -DockOffset.y);
+    //OffsetRect( MoveRect, -DockOffset.x, -DockOffset.y);
     DragDockObject.DockRect := MoveRect;
 
 
@@ -458,15 +459,15 @@ begin
   Client.SetBounds(Left, Top, Right-Left, Bottom-TOp);
 end;
 
-(*procedure TDockX2.DockOver(Source: TDragDockObject; X, Y: Integer;
+procedure TDockX2.DockOver(Source: TDragDockObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 var R,r2 :TRect;
   P : TPoint;
 begin
-  //inherited DockOver(Source, X, Y, State, Accept);
 
   Accept := Source.Control is TCustomToolWindowX2;
-  if Accept then begin
+  inherited DockOver(Source, X, Y, State, Accept);
+  {if Accept then begin
     Source.DropAlign:=alTop;
     R2 := source.Control.BoundsRect;
 
@@ -482,10 +483,10 @@ begin
 
     Source.DockRect :=  R2;
 
-  end;
+  end;}
   //if State = dsDragMove then    PositionDockRect(Source);
-  DoDockOver(Source, X, Y, State, Accept);
-end;*)
+  //DoDockOver(Source, X, Y, State, Accept);
+end;
 
 constructor TDockX2.Create(AOwner: TComponent);
 begin

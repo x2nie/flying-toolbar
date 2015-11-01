@@ -1,17 +1,17 @@
 object Form1: TForm1
   Left = 272
-  Height = 240
+  Height = 189
   Top = 137
-  Width = 469
+  Width = 360
   Caption = 'Form1'
-  ClientHeight = 240
-  ClientWidth = 469
-  LCLVersion = '1.4.0.3'
+  ClientHeight = 189
+  ClientWidth = 360
+  LCLVersion = '1.4.4.0'
   object DockX2_1: TDockX2
     Left = 0
-    Height = 104
+    Height = 9
     Top = 0
-    Width = 469
+    Width = 360
     object ToolbarX2_1: TToolbarX2
       Cursor = crSizeAll
       Left = 8
@@ -29,6 +29,16 @@ object Form1: TForm1
       Top = 16
       Width = 74
       Caption = 'ToolbarX2_2'
+      Color = clBtnFace
+      CloseButton = False
+    end
+    object ToolbarX2_3: TToolbarX2
+      Cursor = crSizeAll
+      Left = 336
+      Height = 50
+      Top = 81
+      Width = 170
+      Caption = 'ToolbarX2_3'
       Color = clBtnFace
       CloseButton = False
     end

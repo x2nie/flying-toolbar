@@ -4,13 +4,13 @@ unit LizardBase_LCL;
 
 interface
 
-uses ExtCtrls;
+uses Controls, ExtCtrls;
 
 type
 
   { TLzbPanel }
 
-  TLzbPanel = class(TCustomPanel)
+  TLzbPanel = class(TCustomControl)
   protected
     procedure Paint; override;
     procedure PaintSurface(); virtual; //unity, because another backend may have override paint

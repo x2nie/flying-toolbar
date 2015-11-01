@@ -34,7 +34,7 @@ interface
 uses
   Classes, TypInfo,
 {$IFDEF FPC}
-  LCLIntf, LResources, LazIDEIntf, PropEdits, ComponentEditors
+  LCLIntf, LResources //,LazIDEIntf, PropEdits, ComponentEditors
 {$ELSE}
   {$IFDEF TB97D6} DesignIntf, DesignEditors {$ELSE} DsgnIntf {$ENDIF}
 {$ENDIF};

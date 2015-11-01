@@ -9,7 +9,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <OtherUnitFiles Value=".."/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Version Minor="1"/>
@@ -32,16 +32,13 @@
         <UnitName Value="Lizard_Reg"/>
       </Item4>
     </Files>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
-      </Item2>
-      <Item3>
         <PackageName Value="FCL"/>
-      </Item3>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
