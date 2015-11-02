@@ -11,10 +11,10 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    DockX2_1: TLzDock;
-    ToolbarX2_1: TLzToolbar;
-    ToolbarX2_2: TLzToolbar;
-    ToolbarX2_3: TLzToolbar;
+    LzDock1: TLzDock;
+    LzToolbar1: TLzToolbar;
+    LzToolbar2: TLzToolbar;
+    LzToolbar3: TLzToolbar;
   private
     { private declarations }
   public

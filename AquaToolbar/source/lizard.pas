@@ -11,11 +11,9 @@ uses
 {$ELSE}
   Windows, Messages,
 {$ENDIF}
-  Classes, Controls, Forms, Graphics, ExtCtrls {shape of floating offscreen},
+  Classes, Controls, Forms, SysUtils, Graphics, ExtCtrls {shape of floating offscreen},
   ImgList,
-{$IFDEF TBX2_GR32}
-  GR32, GR32_Image,
-{$ENDIF}
+
 
 //SURFACE BACKEND
 {$IFDEF FPC}
@@ -47,7 +45,9 @@ type
   TLzDock = class(TLzbPanel)
   private
     FPosition: TDockPosition;
+    FControlsAsDocked : Boolean;
     procedure SetPosition(AValue: TDockPosition);
+    //function GetVisibleDockClientCount: Integer;
   protected
     procedure PaintSurface; override;
     procedure DockOver(Source: TDragDockObject; X, Y: Integer;
@@ -58,6 +58,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
+    //property VisibleDockClientCount: Integer read GetVisibleDockClientCount; //override
   published
     property Color default clBtnFace;
     //property FixAlign: Boolean read FFixAlign write SetFixAlign default False;
@@ -81,6 +82,7 @@ type
     procedure SetCloseButtonWhenDocked(AValue: Boolean);
 
   protected
+    procedure SetParent(AParent: TWinControl); override;
     procedure PaintSurface; override;
     procedure ArrangeControls; virtual;
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
@@ -141,6 +143,7 @@ end;
 
 procedure TLzCustomToolWindow.DoDock(NewDockSite: TWinControl; var ARect: TRect );
 begin
+  //Writeln('TLzCustomToolWindow.DoDock'+ inttohex (Integer(NewDockSite),8) );
   //inherited DoDock(NewDockSite, ARect);
   if (NewDockSite = nil) then Parent := nil;
     if NewDockSite<>nil then begin
@@ -369,6 +372,17 @@ begin
 end;
 
 
+procedure TLzCustomToolWindow.SetParent(AParent: TWinControl);
+begin
+  if not (csDocking in ControlState) then
+  begin
+    Dock(AParent, self.BoundsRect );
+  end
+  else
+    inherited;
+
+end;
+
 { TLzDock }
 
 procedure TLzDock.SetPosition(AValue: TDockPosition);
@@ -430,6 +444,7 @@ var
   DPoint: TPoint;
   Tb : TLzCustomToolWindow;
 begin
+  //Writeln('TLzDock.PositionDockRect');
   if (DragDockObject.Control is TLzCustomToolWindow) then
   with DragDockObject do begin
     Tb := TLzCustomToolWindow(Control);
@@ -512,6 +527,7 @@ begin
   end;}
   //if State = dsDragMove then    PositionDockRect(Source);
   //DoDockOver(Source, X, Y, State, Accept);
+  //Writeln('TLzDock.DockOver Accept:'+ inttostr(Integer(Accept)));
 end;
 
 constructor TLzDock.Create(AOwner: TComponent);
@@ -524,6 +540,15 @@ begin
   TLzDockManager.Create(Self);
   DockSite := True;
 end;
+
+{function TLzDock.GetVisibleDockClientCount: Integer;
+begin
+  if not FControlsAsDocked then //flag run once
+  begin
+    FControlsAsDocked := True;
+  end;
+  Result := inherited VisibleDockClientCount;
+end;}
 
 { TLzDockManager }
 
@@ -569,6 +594,7 @@ var
   Tb : TLzCustomToolWindow;
   Size : TPoint;
 begin
+  //Writeln('TLzDockManager.PositionDockRect');
   //with DragDockObject do
   //begin
     //debugln(['TCustomtoolwin.PositionDockRect="',DbgSName(TControl(DragTarget))]);

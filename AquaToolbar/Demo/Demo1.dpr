@@ -1,5 +1,6 @@
 program Demo1;
 
+{$APPTYPE CONSOLE}
 uses
   Forms, Unit1, Lizard,
   Lizard_Toolbar

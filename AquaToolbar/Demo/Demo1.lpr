@@ -1,7 +1,9 @@
 program Demo1;
 
+{$APPTYPE CONSOLE}
 {$mode objfpc}{$H+}
 
+{$define VerboseDrag}
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
