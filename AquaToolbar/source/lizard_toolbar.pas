@@ -21,7 +21,7 @@ type
 
   { TCustomToolbarX2 }
 
-  TCustomToolbarX2 = class(TCustomToolWindowX2)
+  TLzCustomToolbar = class(TLzCustomToolWindow)
   private
   public
   public
@@ -29,7 +29,7 @@ type
   end;
 
 
-  TToolbarX2 = class(TCustomToolbarX2)
+  TLzToolbar = class(TLzCustomToolbar)
   published
     property Caption;
     property Color;
@@ -40,7 +40,7 @@ implementation
 
 { TCustomToolbarX2 }
 
-constructor TCustomToolbarX2.Create(AOwner: TComponent);
+constructor TLzCustomToolbar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Cursor := crSize;

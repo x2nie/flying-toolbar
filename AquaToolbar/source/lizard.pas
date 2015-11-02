@@ -35,16 +35,16 @@ type
   TDockType = (dtNotDocked, dtTopBottom, dtLeftRight);
   TDockableTo = set of TDockPosition;
 
-  TCustomToolWindowX2 = class;
+  TLzCustomToolWindow = class;
 
   //TInsertRemoveEvent = procedure(Sender: TObject; Inserting: Boolean;
-    //Bar: TCustomToolWindowX2) of object;
-  TRequestDockEvent = procedure(Sender: TObject; Bar: TCustomToolWindowX2;
+    //Bar: TLzCustomToolWindow) of object;
+  TRequestDockEvent = procedure(Sender: TObject; Bar: TLzCustomToolWindow;
     var Accept: Boolean) of object;
 
 
   //TDockX2 = class({$IFDEF TBX2_GR32}TCustomPaintBox32{$ELSE}TCustomPanel{$ENDIF})
-  TDockX2 = class(TLzbPanel)
+  TLzDock = class(TLzbPanel)
   private
     FPosition: TDockPosition;
     procedure SetPosition(AValue: TDockPosition);
@@ -63,14 +63,15 @@ type
     //property FixAlign: Boolean read FFixAlign write SetFixAlign default False;
     //property LimitToOneRow: Boolean read FLimitToOneRow write FLimitToOneRow default False;
     property Position: TDockPosition read FPosition write SetPosition default dpTop;
-
+    property DockSite;
+    property UseDockManager;
     //property OnRequestDock: TRequestDockEvent read FOnRequestDock write FOnRequestDock;
   end;
 
 
-  { TCustomToolWindowX2 }
+  { TLzCustomToolWindow }
 
-  TCustomToolWindowX2 = class(TLzbPanel)
+  TLzCustomToolWindow = class(TLzbPanel)
   private
     FCloseButton: Boolean;
     FCloseButtonWhenDocked: Boolean;
@@ -92,30 +93,53 @@ type
   public
     constructor Create(AOwner: TComponent); override;
 
-    {property DockedTo: TDockX2 read FDockedTo write SetDockedTo stored False;
+    {property DockedTo: TLzDock read FDockedTo write SetDockedTo stored False;
     property DockPos: Integer read FDockPos write SetDockPos default -1;
     property DockRow: Integer read FDockRow write SetDockRow default 0;}
+  published
+    property DragKind;
+    property DragMode;
+  end;
+
+  
+  TLzDockManager = class(TDockManager)
+  private
+     FDockSite : TLzDock;
+  protected
+
+  public
+    constructor Create(ADockSite: TWinControl); override;
+    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
+                               var DockRect: TRect); override;
+    procedure GetControlBounds(Control: TControl;
+                               out AControlBounds: TRect); override;
+    procedure InsertControl(Control: TControl; InsertAt: TAlign;
+                            DropCtl: TControl); override;
+    procedure LoadFromStream(Stream: TStream); override;
+
+    procedure RemoveControl(Control: TControl); override;
+    procedure ResetBounds(Force: Boolean); override;
+    procedure SaveToStream(Stream: TStream); override;
+  published 
 
   end;
 
-
-
 implementation
 
-{ TCustomToolWindowX2 }
+{ TLzCustomToolWindow }
 
-procedure TCustomToolWindowX2.PaintSurface;
+procedure TLzCustomToolWindow.PaintSurface;
 begin
   inherited PaintSurface;
   DrawDockedNCArea;
 end;
 
-procedure TCustomToolWindowX2.ArrangeControls;
+procedure TLzCustomToolWindow.ArrangeControls;
 begin
 
 end;
 
-procedure TCustomToolWindowX2.DoDock(NewDockSite: TWinControl; var ARect: TRect );
+procedure TLzCustomToolWindow.DoDock(NewDockSite: TWinControl; var ARect: TRect );
 begin
   //inherited DoDock(NewDockSite, ARect);
   if (NewDockSite = nil) then Parent := nil;
@@ -133,9 +157,11 @@ begin
           ARect:=Rect(0,0,Width,Height);
         end;
       end else begin
+        {$IFDEF fpc}
         //LCLProc.MoveRectToFit(ARect, NewDockSite.GetLogicalClientRect);
         ARect.TopLeft := NewDockSite.ScreenToClient(Arect.TopLeft);
         ARect.BottomRight := NewDockSite.ScreenToClient(Arect.BottomRight);
+        {$ENDIF}
         // consider Align to increase chance the width/height is kept
         case Align of
           alLeft: OffsetRect(ARect,-ARect.Left,0);
@@ -155,7 +181,7 @@ begin
     //debugln('TControl.DoDock AFTER MOVE ',DbgSName(Self),' BoundsRect=',dbgs(BoundsRect),' TriedRect=',dbgs(ARect));
 end;
 
-constructor TCustomToolWindowX2.Create(AOwner: TComponent);
+constructor TLzCustomToolWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle +
@@ -171,7 +197,7 @@ begin
   Color := clBtnFace;
 end;
 
-procedure TCustomToolWindowX2.DrawDockedNCArea;
+procedure TLzCustomToolWindow.DrawDockedNCArea;
 { Redraws all the non-client area of the toolbar when it is docked. }
 var
   DC: HDC;
@@ -325,14 +351,14 @@ begin
 *)
 end;
 
-procedure TCustomToolWindowX2.SetCloseButton(AValue: Boolean);
+procedure TLzCustomToolWindow.SetCloseButton(AValue: Boolean);
 begin
   if FCloseButton=AValue then Exit;
   FCloseButton:=AValue;
   Invalidate;
 end;
 
-procedure TCustomToolWindowX2.SetCloseButtonWhenDocked(AValue: Boolean);
+procedure TLzCustomToolWindow.SetCloseButtonWhenDocked(AValue: Boolean);
 begin
   if FCloseButtonWhenDocked=AValue then Exit;
   FCloseButtonWhenDocked:=AValue;
@@ -343,9 +369,9 @@ begin
 end;
 
 
-{ TDockX2 }
+{ TLzDock }
 
-procedure TDockX2.SetPosition(AValue: TDockPosition);
+procedure TLzDock.SetPosition(AValue: TDockPosition);
 begin
   if (FPosition <> AValue) and (ControlCount <> 0) then
     raise EInvalidOperation.Create(STBx2DockCannotChangePosition);
@@ -358,7 +384,7 @@ begin
   end;
 end;
 
-procedure TDockX2.PaintSurface;
+procedure TLzDock.PaintSurface;
 var
   R, R2: TRect;
   P1, P2: TPoint;
@@ -391,7 +417,7 @@ begin
   end;
 end;
 
-procedure TDockX2.PositionDockRect(DragDockObject: TDragDockObject);
+procedure TLzDock.PositionDockRect(DragDockObject: TDragDockObject);
   //inherited PositionDockRect(DragDockObject);
 var
   NewWidth, NewHeight: Integer;
@@ -399,15 +425,15 @@ var
   Size: TPoint;
 
 var
-  //MouseOverDock : TDockX2;
+  //MouseOverDock : TLzDock;
   MoveRect : TRect;
   DPoint: TPoint;
-  Tb : TCustomToolWindowX2;
+  Tb : TLzCustomToolWindow;
 begin
-  if (DragDockObject.Control is TCustomToolWindowX2) then
+  if (DragDockObject.Control is TLzCustomToolWindow) then
   with DragDockObject do begin
-    Tb := TCustomToolWindowX2(Control);
-    //MouseOverDock := TDockX2(DragTarget);
+    Tb := TLzCustomToolWindow(Control);
+    //MouseOverDock := TLzDock(DragTarget);
     //DPoint := Point(Tb.Width, Tb.Height);
     {if Position in Tb.DockableTo then
       Size := Tb.OrderControls(False, GetDockTypeOf(Tb.DockedTo), Self)
@@ -448,7 +474,7 @@ begin
     inherited;
 end;
 
-procedure TDockX2.DoAddDockClient(Client: TControl; const ARect: TRect);
+procedure TLzDock.DoAddDockClient(Client: TControl; const ARect: TRect);
 begin
   if Client.Parent <> self Then
     inherited DoAddDockClient(Client, ARect);
@@ -459,13 +485,13 @@ begin
   Client.SetBounds(Left, Top, Right-Left, Bottom-TOp);
 end;
 
-procedure TDockX2.DockOver(Source: TDragDockObject; X, Y: Integer;
+procedure TLzDock.DockOver(Source: TDragDockObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 var R,r2 :TRect;
   P : TPoint;
 begin
 
-  Accept := Source.Control is TCustomToolWindowX2;
+  Accept := Source.Control is TLzCustomToolWindow;
   inherited DockOver(Source, X, Y, State, Accept);
   {if Accept then begin
     Source.DropAlign:=alTop;
@@ -488,14 +514,128 @@ begin
   //DoDockOver(Source, X, Y, State, Accept);
 end;
 
-constructor TDockX2.Create(AOwner: TComponent);
+constructor TLzDock.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls] -
     [csClickEvents, csCaptureMouse, csOpaque];
   Color := clBtnFace;
   Position := dpTop;
-  DockSite:=True;
+  TLzDockManager.Create(Self);
+  DockSite := True;
+end;
+
+{ TLzDockManager }
+
+constructor TLzDockManager.Create(ADockSite: TWinControl);
+begin
+// Init DockSite and DragManager.
+  Assert(ADockSite is TLzDock, 'Only TLzDock supported currently');
+  FDockSite := TLzDock(ADockSite);
+  TPanel(ADockSite).DockManager := self; //cast it because properties are protected
+//reset inappropriate docking defaults - should be fixed in Controls/DragManager!
+  //DragManager.DragImmediate := False;
+  inherited Create(ADockSite);
+end;
+
+procedure TLzDockManager.GetControlBounds(Control: TControl;
+  out AControlBounds: TRect);
+begin
+  inherited;
+
+end;
+
+procedure TLzDockManager.InsertControl(Control: TControl; InsertAt: TAlign;
+  DropCtl: TControl);
+begin
+  inherited;
+
+end;
+
+procedure TLzDockManager.LoadFromStream(Stream: TStream);
+begin
+  inherited;
+
+end;
+
+
+procedure TLzDockManager.PositionDockRect(Client, DropCtl: TControl;
+  DropAlign: TAlign; var DockRect: TRect);
+var
+  Offset : TPoint;
+  //MouseOverDock : TLzDock;
+  MoveRect : TRect;
+  DPoint: TPoint;
+  Tb : TLzCustomToolWindow;
+  Size : TPoint;
+begin
+  //with DragDockObject do
+  //begin
+    //debugln(['TCustomtoolwin.PositionDockRect="',DbgSName(TControl(DragTarget))]);
+    if (Client is TLzCustomToolWindow) then
+    begin
+      Tb := TLzCustomToolWindow(Client);
+      //MouseOverDock := TLzDock(DragTarget);
+      DPoint := Point(Tb.Width-1, Tb.Height-1);
+      {if FDockSite.Position in Tb.DockableTo then
+        Size := Tb.OrderControls(False, GetDockTypeOf(Tb.DockedTo), FDockSite)
+      else
+        Size := Tb.ClientRect.BottomRight;}
+      Size := Point(Tb.Width, Tb.Height);
+
+      // Drag position for dock rect is scaled relative to control's click point.
+      (*{$IFNDEF FPC}
+      TempX := DragPos.X - ((Size.X) * MouseDeltaX);
+      TempY := DragPos.Y - ((Size.Y) * MouseDeltaY);
+      {$ELSE}
+      TempX := DragPos.X - ((Size.X) );
+      TempY := DragPos.Y - ((Size.Y) );
+      {$ENDIF}
+
+      MoveRect := Bounds(DragPos.X-MulDiv(Size.X-1, DragPos.X, DPoint.X),
+          DragPos.Y-MulDiv(Size.Y-1, DragPos.Y, DPoint.Y),
+          Size.X, Size.Y);
+
+      MoveRect := Bounds(Round(TempX), Round(TempY),
+          Size.X, Size.Y);
+
+      DockRect := MoveRect;
+      *)
+      with DockRect do begin
+        Right := Left + Size.X;
+        Bottom := Top + Size.Y;
+      end;
+      //AddDockedNCAreaToSize (Size, Dock.Position in PositionLeftOrRight);
+    end
+    else  
+    begin
+      DockRect := Rect(0, 0, FDockSite.ClientWidth, FDockSite.ClientHeight);
+      if (Client is TLzCustomToolWindow) then
+      begin
+        Tb := TLzCustomToolWindow(Client);
+        DockRect := Rect(0, 0, Tb.ClientWidth, Tb.ClientHeight);
+      end;
+      Offset:=FDockSite.ClientOrigin;
+      OffsetRect(DockRect,Offset.X,Offset.Y);
+    end;
+end;
+
+procedure TLzDockManager.RemoveControl(Control: TControl);
+begin
+  inherited;
+
+end;
+
+procedure TLzDockManager.ResetBounds(Force: Boolean);
+begin
+  inherited;
+
+end;
+
+procedure TLzDockManager.SaveToStream(Stream: TStream);
+begin
+  inherited;
+
 end;
 
 end.

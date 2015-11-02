@@ -1,22 +1,20 @@
 unit Unit1;
 
-{$mode objfpc}{$H+}
-
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Lizard,
-  Lizard_Toolbar;
+  Classes, SysUtils, {FileUtil,} Forms, Controls, Graphics, Dialogs, Lizard,
+  Lizard_Toolbar, ExtCtrls;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
-    DockX2_1: TDockX2;
-    ToolbarX2_1: TToolbarX2;
-    ToolbarX2_2: TToolbarX2;
-    ToolbarX2_3: TToolbarX2;
+    DockX2_1: TLzDock;
+    ToolbarX2_1: TLzToolbar;
+    ToolbarX2_2: TLzToolbar;
+    ToolbarX2_3: TLzToolbar;
   private
     { private declarations }
   public
@@ -28,7 +26,7 @@ var
 
 implementation
 
-{$R *.lfm}
+{$R *.dfm}
 
 end.
 
