@@ -1,0 +1,81 @@
+object Form1: TForm1
+  Left = 353
+  Height = 240
+  Top = 354
+  Width = 561
+  Caption = 'Form1'
+  ClientHeight = 240
+  ClientWidth = 561
+  LCLVersion = '1.4.4.0'
+  object CheckComboBox1: TCheckComboBox
+    Left = 24
+    Height = 24
+    Top = 48
+    Width = 100
+    ItemHeight = 16
+    Items.Strings = (
+      'woles'
+      'kelse'
+      'couy'
+    )
+    TabOrder = 0
+  end
+  object CalcEdit1: TCalcEdit
+    Left = 66
+    Height = 21
+    Top = 32
+    Width = 103
+    CalculatorLayout = clNormal
+    AsFloat = 0
+    AsInteger = 0
+    ButtonWidth = 23
+    NumGlyphs = 1
+    MaxLength = 0
+    TabOrder = 1
+  end
+  object DateEdit1: TDateEdit
+    Left = 82
+    Height = 21
+    Top = 151
+    Width = 103
+    CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+    OKCaption = 'OK'
+    CancelCaption = 'Cancel'
+    DateOrder = doNone
+    ButtonWidth = 23
+    NumGlyphs = 1
+    MaxLength = 0
+    TabOrder = 2
+  end
+  object Button1: TButton
+    Left = 0
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Button1'
+    OnClick = Button1Click
+    TabOrder = 3
+  end
+  object DateTimePicker1: TDateTimePicker
+    Left = 192
+    Height = 21
+    Top = 48
+    Width = 81
+    CenturyFrom = 1941
+    MaxDate = 2958465
+    MinDate = -53780
+    TabOrder = 4
+    TrailingSeparator = False
+    TextForNullDate = 'NULL'
+    LeadingZeros = True
+    Kind = dtkDate
+    TimeFormat = tf24
+    TimeDisplay = tdHMS
+    DateMode = dmComboBox
+    Date = 42311
+    Time = 0.0298091203731019
+    UseDefaultSeparators = True
+    HideDateTimeParts = []
+    MonthNames = 'Long'
+  end
+end
