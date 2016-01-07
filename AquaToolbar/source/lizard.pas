@@ -965,11 +965,12 @@ begin
     else
       Size := Tb.ClientRect.BottomRight;}
     Size := Point(Tb.Width, Tb.Height);
-
+    {
     Write(Format('DragPos: %d,%d',[DragPos.x, DragPos.y]));
     Write(Format(' DragTargetPos: %d,%d',[DragTargetPos.x, DragTargetPos.y]));
     Writeln(Format(' DockRect: %d,%d',[DockRect.left, DockRect.top]));
-
+    }
+    
     {$IFDEF FPC}
     TempX := DragPos.X - ((Tb.FMouseDownPos.X) );
     TempY := DragPos.Y - ((tb.FMouseDownPos.Y) );
@@ -1412,7 +1413,7 @@ begin
   Canvas.Brush.Color:= clYellow;
   Canvas.FrameRect(self.ClientRect);
 
-(*
+
 {$IFNDEF FPC}
   {if not DrawToDC then
     DC := GetWindowDC(Handle)
@@ -1437,7 +1438,10 @@ begin
     //GetWindowRect (Handle, R); OffsetRect (R, -R.Left, -R.Top);
 
 
-    if not(DockedTo.Position in PositionLeftOrRight) then
+    if not Assigned(DockedTo) then
+      DockType := dtTopBottom
+    else
+    if  not(DockedTo.Position in PositionLeftOrRight) then
       DockType := dtTopBottom
     else
       DockType := dtLeftRight;
@@ -1472,12 +1476,12 @@ begin
     end;}
 
     { The drag handle at the left, or top }
-    if DockedTo.FAllowDrag then begin
+    if not Assigned(DockedTo) or  DockedTo.FAllowDrag then begin
       SaveIndex := SaveDC(DC);
-      if DockType <> dtLeftRight then
-        Y2 := ClientHeight
+      if DockType = dtLeftRight then
+        Y2 := ClientWidth
       else
-        Y2 := ClientWidth;
+        Y2 := ClientHeight;
       //Inc (Y2, DockedBorderSize);
       Y3 := Y2;
       S := DragHandleSizes[FCloseButtonWhenDocked, FDragHandleStyle];
@@ -1536,7 +1540,7 @@ begin
   finally
     //if not DrawToDC then   ReleaseDC (Handle, DC);
   end;
-*)
+
 end;
 
 procedure TLzCustomToolWindow.EndUpdate;
@@ -1682,7 +1686,9 @@ begin
         OldDockedTo.BeginUpdate;
       if Assigned(NewDockedTo) then
         NewDockedTo.BeginUpdate;
+      {$ifdef fpc}
       DisableAutoSizing;
+      {$endif}
       try
         if Assigned(AParent) then begin
           //DoDockChangingHidden (NewDockedTo);
@@ -1746,7 +1752,7 @@ begin
           FLastDockTypeSet := True;
         end;
       finally
-        EnableAutoSizing;
+        {$ifdef fpc}EnableAutoSizing;{$endif}
         if Assigned(NewDockedTo) then
           NewDockedTo.EndUpdate;
         if Assigned(OldDockedTo) then

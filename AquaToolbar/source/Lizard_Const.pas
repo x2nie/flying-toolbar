@@ -1,4 +1,4 @@
-unit Lizard_Reg;
+unit Lizard_Const;
 
 {
   ToolBench X2
@@ -31,25 +31,22 @@ interface
 
 {$I Lizard_Ver.inc}
 
-uses
-  Classes, TypInfo,
-{$IFDEF FPC}
-  LCLIntf, LResources //,LazIDEIntf, PropEdits, ComponentEditors
-{$ELSE}
-  {$IFDEF TB97D6} DesignIntf, DesignEditors {$ELSE} DsgnIntf {$ENDIF}
-{$ENDIF};
+{$IFDEF TB97D3} resourcestring {$ELSE} const {$ENDIF}
+  { TDockX2 exception messages }
+  STBx2DockParentNotAllowed = 'A TDockX2 control cannot be placed inside a tool window or another TDockX2';
+  STBx2DockCannotChangePosition = 'Cannot change Position of a TDockX2 if it already contains controls';
 
-procedure Register;
+  { TCustomToolWindowX2 exception messages }
+  STBx2ToolwinNameNotSet = 'Cannot save tool window''s position because Name property is not set';
+  STBx2ToolwinDockedToNameNotSet = 'Cannot save tool window''s position because DockedTo''s Name property not set';
+  STBx2ToolwinParentNotAllowed = 'A tool window can only be placed on a TDockX2 or directly on the form';
+
+  { TCustomToolbarX2 exception messages }
+  STBx2ToolbarControlNotChildOfToolbar = 'Control ''%s'' is not a child of the toolbar';
+
+  { TToolbarSepX2 exception messages }
+  STBx2SepParentNotAllowed = 'TToolbarSepX2 can only be placed on a TToolbarX2';
 
 implementation
-
-uses
-  Lizard, Lizard_Toolbar, Lizard_Button;
-
-procedure Register;
-begin
-  RegisterComponents('Lizard',[TLzDock, TLzToolbar, TLzToolbarSep
-  , TLzToolbarButton, TLzEdit ]);
-end;
 
 end.

@@ -120,7 +120,7 @@ type
 
   TToolbarSepSize = 1..MaxInt;
 
-  TToolbarSepX2 = class(TGraphicControl)
+  TLzToolbarSep = class(TGraphicControl)
   private
     FBlank: Boolean;
     FSizeHorz, FSizeVert: TToolbarSepSize;
@@ -290,7 +290,7 @@ begin
       end;
       C := Children[I];
       GI^.Members.Add (C);
-      if C is TToolbarSepX2 then
+      if C is TLzToolbarSep then
         NewGroup := True
       else begin
         with C do begin
@@ -306,7 +306,7 @@ end;
 
 function TLzCustomToolbar.ChildControlTransparent(Ctl: TControl): Boolean;
 begin
-  Result := Ctl is TToolbarSepX2;
+  Result := Ctl is TLzToolbarSep;
 end;
 
 procedure TLzCustomToolbar.CleanOrderList;
@@ -437,7 +437,7 @@ var
   Member: TControl;
   MemberIsSep: Boolean;
   GroupPosSize, MemberPosSize: Integer;
-  PreviousSep: TToolbarSepX2;  PrevMinPosPixels: Integer;
+  PreviousSep: TLzToolbarSep;  PrevMinPosPixels: Integer;
   NewLineSep: TLineSep;
   CR : TRect;
 label 1;
@@ -457,7 +457,7 @@ begin
       in case one of the *LoadToolbarPositions functions happened to read
       a value too small. }
     for I := 0 to ControlCount-1 do
-      if not(Controls[I] is TToolbarSepX2) then
+      if not(Controls[I] is TLzToolbarSep) then
         with Controls[I] do
           if Width + (tbX2LeftMarginFloating+tbX2RightMarginFloating) > RightX then
             RightX := Width + (tbX2LeftMarginFloating+tbX2RightMarginFloating);
@@ -465,7 +465,7 @@ begin
 
   if CanMoveControls and (SlaveInfo.Count <> 0) then
     for I := 0 to ControlCount-1 do
-      if not(Controls[I] is TToolbarSepX2) then
+      if not(Controls[I] is TLzToolbarSep) then
         SetControlVisible (Controls[I], NewDockType = dtLeftRight);
 
   GetBarSize (CurBarSize, NewDockType);
@@ -547,7 +547,7 @@ begin
           then MinPosPixels := CurPosPixel;
         for I := 0 to GI^.Members.Count-1 do begin
           Member := TControl(GI^.Members[I]);
-          MemberIsSep := Member is TToolbarSepX2;
+          MemberIsSep := Member is TLzToolbarSep;
           with Member do begin
             if not MemberIsSep then begin
               if NewDockType <> dtLeftRight then
@@ -557,9 +557,9 @@ begin
             end
             else begin
               if NewDockType <> dtLeftRight then
-                MemberPosSize := TToolbarSepX2(Member).SizeHorz
+                MemberPosSize := TLzToolbarSep(Member).SizeHorz
               else
-                MemberPosSize := TToolbarSepX2(Member).SizeVert;
+                MemberPosSize := TLzToolbarSep(Member).SizeVert;
             end;
             { If RightX is passed, proceed to next line }
             if AllowWrap and not MemberIsSep and
@@ -585,8 +585,8 @@ begin
               end
               else begin
                 if CanMoveControls then
-                  SetBounds (CurPosPixel, CurLinePixel, TToolbarSepX2(Member).SizeHorz, DockRowSize);
-                Inc (CurPosPixel, TToolbarSepX2(Member).SizeHorz);
+                  SetBounds (CurPosPixel, CurLinePixel, TLzToolbarSep(Member).SizeHorz, DockRowSize);
+                Inc (CurPosPixel, TLzToolbarSep(Member).SizeHorz);
               end;
             end
             else begin
@@ -599,15 +599,15 @@ begin
               end
               else begin
                 if CanMoveControls then
-                  SetBounds (CurLinePixel, CurPosPixel, DockRowSize, TToolbarSepX2(Member).SizeVert);
-                Inc (CurPosPixel, TToolbarSepX2(Member).SizeVert);
+                  SetBounds (CurLinePixel, CurPosPixel, DockRowSize, TLzToolbarSep(Member).SizeVert);
+                Inc (CurPosPixel, TLzToolbarSep(Member).SizeVert);
               end;
             end;
             PrevMinPosPixels := MinPosPixels;
             if not MemberIsSep then
               PreviousSep := nil
             else
-              PreviousSep := TToolbarSepX2(Member);
+              PreviousSep := TLzToolbarSep(Member);
             if CurPosPixel > MinPosPixels then MinPosPixels := CurPosPixel;
           end;
         end;
@@ -696,7 +696,7 @@ end;
 
 { TToolbarSep97 }
 
-constructor TToolbarSepX2.Create (AOwner: TComponent);
+constructor TLzToolbarSep.Create (AOwner: TComponent);
 begin
   inherited;
   FSizeHorz := 6;
@@ -704,14 +704,14 @@ begin
   ControlStyle := ControlStyle - [csOpaque, csCaptureMouse];
 end;
 
-procedure TToolbarSepX2.SetParent (AParent: TWinControl);
+procedure TLzToolbarSep.SetParent (AParent: TWinControl);
 begin
   if (AParent <> nil) and not(AParent is TLzCustomToolbar) then
     raise EInvalidOperation.Create('ParentNotAllowed');
   inherited;
 end;
 
-procedure TToolbarSepX2.SetBlank (Value: Boolean);
+procedure TLzToolbarSep.SetBlank (Value: Boolean);
 begin
   if FBlank <> Value then begin
     FBlank := Value;
@@ -719,7 +719,7 @@ begin
   end;
 end;
 
-procedure TToolbarSepX2.SetSizeHorz (Value: TToolbarSepSize);
+procedure TLzToolbarSep.SetSizeHorz (Value: TToolbarSepSize);
 begin
   if FSizeHorz <> Value then begin
     FSizeHorz := Value;
@@ -728,7 +728,7 @@ begin
   end;
 end;
 
-procedure TToolbarSepX2.SetSizeVert (Value: TToolbarSepSize);
+procedure TLzToolbarSep.SetSizeVert (Value: TToolbarSepSize);
 begin
   if FSizeVert <> Value then begin
     FSizeVert := Value;
@@ -737,7 +737,7 @@ begin
   end;
 end;
 
-procedure TToolbarSepX2.Paint;
+procedure TLzToolbarSep.Paint;
 var
   R: TRect;
   Z: Integer;
@@ -774,7 +774,7 @@ begin
   end;
 end;
 
-procedure TToolbarSepX2.MouseDown (Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TLzToolbarSep.MouseDown (Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
 begin
