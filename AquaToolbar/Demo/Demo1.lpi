@@ -49,9 +49,8 @@
         <ResourceBaseClass Value="Form"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\source\lizard.pas"/>
+        <Filename Value="..\source\Lizard.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Lizard"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\source\lizardbase_lcl.pas"/>
@@ -69,13 +68,13 @@
         <UnitName Value="LizardConst"/>
       </Unit5>
       <Unit6>
-        <Filename Value="..\source\lizard_toolbar.pas"/>
+        <Filename Value="..\source\Lizard_Toolbar.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Lizard_Toolbar"/>
       </Unit6>
       <Unit7>
-        <Filename Value="..\source\Lizard_Reg.pas"/>
+        <Filename Value="..\source\lizard_reg.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Lizard_Reg"/>
       </Unit7>
     </Units>
   </ProjectOptions>

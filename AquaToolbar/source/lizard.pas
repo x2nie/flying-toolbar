@@ -58,6 +58,7 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     //property VisibleDockClientCount: Integer read GetVisibleDockClientCount; //override
   published
     property Color default clBtnFace;
@@ -82,11 +83,12 @@ type
     procedure SetCloseButtonWhenDocked(AValue: Boolean);
 
   protected
+    FMouseDownPos : TPoint;
     procedure SetParent(AParent: TWinControl); override;
     procedure PaintSurface; override;
     procedure ArrangeControls; virtual;
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
-
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
 
     property DockableTo: TDockableTo read FDockableTo write FDockableTo default [dpTop, dpBottom, dpLeft, dpRight];
     property CloseButton: Boolean read FCloseButton write SetCloseButton default True;
@@ -104,6 +106,8 @@ type
   end;
 
   
+  { TLzDockManager }
+
   TLzDockManager = class(TDockManager)
   private
      FDockSite : TLzDock;
@@ -184,6 +188,13 @@ begin
     //debugln('TControl.DoDock AFTER MOVE ',DbgSName(Self),' BoundsRect=',dbgs(BoundsRect),' TriedRect=',dbgs(ARect));
 end;
 
+procedure TLzCustomToolWindow.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  FMouseDownPos := Point(X,Y);
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
 constructor TLzCustomToolWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -191,7 +202,7 @@ begin
     [csAcceptsControls, csClickEvents, csDoubleClicks, csSetCaption] -
     [csCaptureMouse{capturing is done manually}, csOpaque];
 
-  BorderStyle := bsSingle;
+  //BorderStyle := bsSingle;
   FDockableTo := [dpTop, dpBottom, dpLeft, dpRight];
 
   DragKind := dkDock;
@@ -227,6 +238,9 @@ begin
   if {not Docked or} not HandleAllocated then Exit;
   Canvas.Brush.Color:= clRed;
   Canvas.FillRect(Rect(0,0,10,10));
+  Canvas.Brush.Color:= clYellow;
+  Canvas.FrameRect(self.ClientRect);
+
 (*
 {$IFNDEF FPC}
   {if not DrawToDC then
@@ -374,13 +388,12 @@ end;
 
 procedure TLzCustomToolWindow.SetParent(AParent: TWinControl);
 begin
-  if not (csDocking in ControlState) then
+  if not (csDocking in ControlState) and not (csDesigning in ComponentState)then
   begin
     Dock(AParent, self.BoundsRect );
   end
   else
     inherited;
-
 end;
 
 { TLzDock }
@@ -410,9 +423,10 @@ begin
 
     { Draw dotted border in design mode }
     if csDesigning in ComponentState then begin
-      Pen.Style := psDot;
-      Pen.Color := clBtnShadow;
-      Brush.Style := bsClear;
+      Pen.Style := psDash;
+      Pen.Color := clBlack;
+      Brush.Style := bsFDiagonal;
+      Brush.Color := clCream;
       Rectangle (R.Left, R.Top, R.Right, R.Bottom);
       Pen.Style := psSolid;
       InflateRect (R, -1, -1);
@@ -456,14 +470,19 @@ begin
       Size := Tb.ClientRect.BottomRight;}
     Size := Point(Tb.Width, Tb.Height);
 
+    Write(Format('DragPos: %d,%d',[DragPos.x, DragPos.y]));
+    Write(Format(' DragTargetPos: %d,%d',[DragTargetPos.x, DragTargetPos.y]));
+    Writeln(Format(' DockRect: %d,%d',[DockRect.left, DockRect.top]));
+
+    {$IFDEF FPC}
+    TempX := DragPos.X - ((Tb.FMouseDownPos.X) );
+    TempY := DragPos.Y - ((tb.FMouseDownPos.Y) );
+    DragDockObject.DockRect := Bounds(Round(TempX), Round(TempY),
+        Tb.Width, Tb.Height);
+    {$ELSE}
     // Drag position for dock rect is scaled relative to control's click point.
-    {$IFNDEF FPC}
     TempX := DragPos.X - ((Size.X) * MouseDeltaX);
     TempY := DragPos.Y - ((Size.Y) * MouseDeltaY);
-    {$ELSE}
-    TempX := DragPos.X - ((Size.X) );
-    TempY := DragPos.Y - ((Size.Y) );
-    {$ENDIF}
 
     {MoveRect := Bounds(DragPos.X-MulDiv(Size.X-1, DragPos.X, DPoint.X),
         DragPos.Y-MulDiv(Size.Y-1, DragPos.Y, DPoint.Y),
@@ -472,15 +491,16 @@ begin
     MoveRect := Bounds(Round(TempX), Round(TempY),
         Size.X, Size.Y);
 
-    with MoveRect do begin
+    {with MoveRect do begin
       Left := DragPos.x;
       Top := DragPos.y;
       Right := Left + Size.X;
       Bottom:= Top + Size.Y;
-    end;
+    end;}
     // let user adjust dock rect
     //OffsetRect( MoveRect, -DockOffset.x, -DockOffset.y);
     DragDockObject.DockRect := MoveRect;
+    {$ENDIF}
 
 
       //AddDockedNCAreaToSize (Size, Dock.Position in PositionLeftOrRight);
@@ -550,6 +570,18 @@ begin
   Result := inherited VisibleDockClientCount;
 end;}
 
+destructor TLzDock.Destroy;
+begin
+  {$ifndef fpc}
+  if (DockManager<>nil) and (TDockManager(DockManager) is TLzDockManager)
+  and TLzDockManager(DockManager).AutoFreeByControl then
+    TLzDockManager(DockManager).Free;
+  {$endif}
+
+  DockManager:=nil;
+  inherited;
+end;
+
 { TLzDockManager }
 
 constructor TLzDockManager.Create(ADockSite: TWinControl);
@@ -562,6 +594,7 @@ begin
   //DragManager.DragImmediate := False;
   inherited Create(ADockSite);
 end;
+
 
 procedure TLzDockManager.GetControlBounds(Control: TControl;
   out AControlBounds: TRect);
@@ -593,7 +626,9 @@ var
   DPoint: TPoint;
   Tb : TLzCustomToolWindow;
   Size : TPoint;
+  TempX, TempY : integer;
 begin
+  exit;
   //Writeln('TLzDockManager.PositionDockRect');
   //with DragDockObject do
   //begin
@@ -617,14 +652,14 @@ begin
       TempX := DragPos.X - ((Size.X) );
       TempY := DragPos.Y - ((Size.Y) );
       {$ENDIF}
-
+      {$ifdef axyz}
       MoveRect := Bounds(DragPos.X-MulDiv(Size.X-1, DragPos.X, DPoint.X),
           DragPos.Y-MulDiv(Size.Y-1, DragPos.Y, DPoint.Y),
           Size.X, Size.Y);
-
+      {$else}
       MoveRect := Bounds(Round(TempX), Round(TempY),
           Size.X, Size.Y);
-
+      {$endif}
       DockRect := MoveRect;
       *)
       with DockRect do begin

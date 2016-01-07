@@ -4,7 +4,7 @@ interface
 
 uses
   Classes, SysUtils, {FileUtil,} Forms, Controls, Graphics, Dialogs, Lizard,
-  Lizard_Toolbar, ExtCtrls;
+  Lizard_Toolbar, ExtCtrls, ComCtrls;
 
 type
 
@@ -15,6 +15,7 @@ type
     LzToolbar1: TLzToolbar;
     LzToolbar2: TLzToolbar;
     LzToolbar3: TLzToolbar;
+  
   private
     { private declarations }
   public
@@ -27,6 +28,8 @@ var
 implementation
 
 {$R *.dfm}
+
+
 
 end.
 
