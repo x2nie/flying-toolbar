@@ -34,6 +34,7 @@ contains
   Lizard in '..\lizard.pas',
   Lizard_Reg in '..\lizard_reg.pas',
   Lizard_Toolbar in '..\lizard_toolbar.pas',
-  LizardBase_VCL in '..\LizardBase_VCL.pas';
+  LizardBase_VCL in '..\LizardBase_VCL.pas',
+  Lizard_Common in '..\Lizard_Common.pas';
 
 end.

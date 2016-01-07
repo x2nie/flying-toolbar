@@ -48,7 +48,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Lizard',[TLzDock, TLzToolbar {, TToolbarButtonX2, TToolbarSepX2, TEditX2} ]);
+  RegisterComponents('Lizard',[TLzDock, TLzToolbar, TToolbarSepX2  {, TToolbarButtonX2, TEditX2} ]);
 end;
 
 end.

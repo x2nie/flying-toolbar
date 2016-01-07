@@ -7,7 +7,8 @@ unit Lizard_Lazarus;
 interface
 
 uses
-  LizardConst, Lizard, Lizard_Toolbar, Lizard_Reg, LazarusPackageIntf;
+  LizardConst, Lizard, Lizard_Toolbar, Lizard_Reg, Lizard_Common, 
+  LazarusPackageIntf;
 
 implementation
 
