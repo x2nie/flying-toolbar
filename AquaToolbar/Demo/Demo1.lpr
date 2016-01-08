@@ -1,6 +1,6 @@
 program Demo1;
 
-{$APPTYPE CONSOLE}
+{.$APPTYPE CONSOLE}
 {$mode objfpc}{$H+}
 
 {$define VerboseDrag}

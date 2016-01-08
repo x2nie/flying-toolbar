@@ -176,6 +176,7 @@ type
     FDefaultDock: TLzDock;
     FImageList: TCustomImageList;
     FImageChangeLink: TChangeLink;
+    procedure CalculateNonClientSizes (R: PRect);
     procedure SetDockedTo(AValue: TLzDock);
     procedure SetDockPos(AValue: Integer);
     procedure SetDockRow(AValue: Integer);
@@ -197,6 +198,7 @@ type
     procedure SetImagesList(const Value: TCustomImageList);
   protected
     FRowsMin: Integer;
+    function GetClientRect: TRect; override;
     procedure CustomArrangeControls (const PreviousDockType: TDockType;
       const DockingTo: TLzDock; const Resize: Boolean);
     procedure GetParams (var Params: TToolWindowParams); dynamic;
@@ -206,6 +208,8 @@ type
     procedure InitializeOrdering; dynamic;
     procedure ImageListChanged(Sender: TObject); virtual;
 
+    procedure AlignControls (AControl: TControl; var Rect: TRect); override;
+    procedure SetParent (AParent: TWinControl); override;
     procedure GetDockRowSize (var AHeightOrWidth: Integer);
     procedure Loaded; override;
 
@@ -213,7 +217,6 @@ type
 
   protected
     FMouseDownPos : TPoint;
-    procedure SetParent(AParent: TWinControl); override;
     procedure PaintSurface; override;
     procedure ArrangeControls; virtual;
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
@@ -856,12 +859,6 @@ end;
 
 destructor TLzDock.Destroy;
 begin
-  {$ifndef fpc}
-  if (DockManager<>nil) and (TDockManager(DockManager) is TLzDockManager)
-  and TLzDockManager(DockManager).AutoFreeByControl then
-    TLzDockManager(DockManager).Free;
-  {$endif}
-
   DockManager:=nil;
   inherited;
 end;
@@ -1288,13 +1285,15 @@ begin
         Inc (X, FNonClientWidth);
         Inc (Y, FNonClientHeight);
         if (Width <> X) or (Height <> Y) then begin
-          {$IFDEF TBX2_DRAGDROP}
+          {$IFDEF fpc}
           DisableAutoSizing;
           try
             SetBounds (Left, Top, X, Y);
           finally
             EnableAutoSizing;
           end;
+          {$ELSE}
+            SetBounds (Left, Top, X, Y);
           {$ENDIF}
         end;
       end;
@@ -1322,6 +1321,8 @@ procedure TLzCustomToolWindow.PaintSurface;
 begin
   inherited PaintSurface;
   DrawDockedNCArea;
+  Canvas.Brush.Color:= clBlue;
+  Canvas.FrameRect(ClientRect);
 end;
 
 procedure TLzCustomToolWindow.DoDock(NewDockSite: TWinControl; var ARect: TRect );
@@ -1727,7 +1728,7 @@ begin
           { Force a recalc of NC sizes now so that FNonClientWidth &
             FNonClientHeight are accurate, even if the control didn't receive
             a WM_NCCALCSIZE message because it has no handle. }
-          //CalculateNonClientSizes (nil);
+          CalculateNonClientSizes (nil);
 
           {if OldParent is TFloatingWindowParent then begin
             if FFloatParent = OldParent then FFloatParent := nil;
@@ -1885,6 +1886,77 @@ begin
     ResizeClipCursor := True;
   end;
 end;
+
+procedure TLzCustomToolWindow.AlignControls(AControl: TControl;
+  var Rect: TRect);
+{ VCL calls this whenever any child controls in the toolbar are moved, sized,
+  inserted, etc. It doesn't need to make use of the AControl and Rect
+  parameters. }
+begin
+  if Params.CallAlignControls then
+    inherited;
+  ArrangeControls;
+end;
+
+procedure TLzCustomToolWindow.CalculateNonClientSizes(R: PRect);
+{ Recalculates FNonClientWidth and FNonClientHeight.
+  If R isn't nil, it deflates the rectangle to exclude the non-client area. }
+var
+  Temp: TRect;
+  TL, BR: TPoint;
+  Z: Integer;
+begin
+  Temp := Rect(0,0,0,0);
+  if R = nil then
+    R := @Temp;
+  if not Docked then begin
+    {GetFloatingNCArea (TL, BR);
+    FNonClientWidth := TL.X + BR.X;
+    FNonClientHeight := TL.Y + BR.Y;
+    with R^ do begin
+      Inc (Left, TL.X);
+      Inc (Top, TL.Y);
+      Dec (Right, BR.X);
+      Dec (Bottom, BR.Y);
+    end;}
+    InflateRect (R^, -DockedBorderSize, -DockedBorderSize);
+    FNonClientWidth := DockedBorderSize2;
+    FNonClientHeight := DockedBorderSize2;
+      Z := DragHandleSizes[FCloseButtonWhenDocked, FDragHandleStyle];
+      //if assigned(DockedTo) and not(DockedTo.Position in PositionLeftOrRight) then
+      begin
+        Inc (R.Left, Z);
+        Inc (FNonClientWidth, Z);
+      end
+      {else begin
+        Inc (R.Top, Z);
+        Inc (FNonClientHeight, Z);
+      end;}
+  end
+  else begin
+    InflateRect (R^, -DockedBorderSize, -DockedBorderSize);
+    FNonClientWidth := DockedBorderSize2;
+    FNonClientHeight := DockedBorderSize2;
+    if DockedTo.FAllowDrag then
+    begin
+      Z := DragHandleSizes[FCloseButtonWhenDocked, FDragHandleStyle];
+      if assigned(DockedTo) and not(DockedTo.Position in PositionLeftOrRight) then begin
+        Inc (R.Left, Z);
+        Inc (FNonClientWidth, Z);
+      end
+      else begin
+        Inc (R.Top, Z);
+        Inc (FNonClientHeight, Z);
+      end;
+    end;
+  end;
+end;
+function TLzCustomToolWindow.GetClientRect: TRect;
+begin
+  Result := inherited GetClientRect;
+  CalculateNonClientSizes (@Result);
+end;
+
 procedure TLzCustomToolWindow.Loaded;
 var
   R: TRect;

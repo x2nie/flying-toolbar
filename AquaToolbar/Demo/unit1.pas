@@ -17,7 +17,6 @@ type
     LzToolbar1: TLzToolbar;
     LzToolbar2: TLzToolbar;
     LzToolbar3: TLzToolbar;
-    ToolbarSepX2_1: TToolbarSepX2;
   
   private
     { private declarations }

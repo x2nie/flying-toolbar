@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 327
+  Left = 438
   Height = 353
-  Top = 134
+  Top = 187
   Width = 384
   Caption = 'Form1'
   ClientHeight = 353
@@ -33,10 +33,6 @@ object Form1: TForm1
       DockPos = 0
       Images = ImageList1
       TabOrder = 0
-      object ToolbarSepX2_1: TToolbarSepX2
-        Left = 13
-        Top = 5
-      end
     end
     object LzToolbar2: TLzToolbar
       Cursor = crSizeAll

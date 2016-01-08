@@ -232,17 +232,18 @@ procedure TLzCustomToolbar.AdjustClientRect(var Rect: TRect);
 var LSize : Integer;
 begin
   inherited;
-{  InflateRect(Rect, -DockedBorderSize, -DockedBorderSize);
-  if Docked then
+  {
+  //InflateRect(Rect, -DockedBorderSize, -DockedBorderSize);
+  //if Docked then
   begin
     LSize := DragHandleSizes[CloseButtonWhenDocked, DragHandleStyle];
-    if DockedTo.Position in PositionLeftOrRight then
+    if Assigned(DockedTo) and (DockedTo.Position in PositionLeftOrRight) then
       Inc(Rect.Top, LSize) //toolbar = vertical
     else
-      Inc(Rect.Left, LSize); //toolbar = Horizontal
-
-  end;}
-
+      //Inc(Rect.Left, LSize); //toolbar = Horizontal
+      Rect.Left := Rect.Left + 1;
+  end;
+  }
 end;
 
 procedure TLzCustomToolbar.BuildGroupInfo(const List: TList;
@@ -370,7 +371,7 @@ procedure TLzCustomToolbar.GetBarSize(var ASize: Integer;
 var
   I: Integer;
 begin
-  ASize := tbx2DefaultBarWidthHeight {* FRowsMin};
+  ASize := tbx2DefaultBarWidthHeight * FRowsMin;
   for I := 0 to ControlCount-1 do
     ///if not(Controls[I] is TToolbarSep97) then
       with Controls[I] do begin
