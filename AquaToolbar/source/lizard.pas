@@ -620,7 +620,7 @@ begin
     LeftRight := Position in PositionLeftOrRight;
 
     if not HasVisibleToolbars then begin
-      EmptySize := Ord(FFixAlign)+100;//debug
+      EmptySize := Ord(FFixAlign);
       if csDesigning in ComponentState then
         EmptySize := 9;
       if not LeftRight then
@@ -864,14 +864,62 @@ begin
 end;
 
 procedure TLzDock.DoAddDockClient(Client: TControl; const ARect: TRect);
-begin
+{begin
   if Client.Parent <> self Then
     inherited DoAddDockClient(Client, ARect);
   //Client.Align := alTop;
   //Client.Align := AlNone;
   Client.Align := alCustom;
   with Arect do
-  Client.SetBounds(Left, Top, Right-Left, Bottom-TOp);
+  Client.SetBounds(Left, Top, Right-Left, Bottom-TOp);}
+
+var
+    NewDockRow: Integer;
+    Before: Boolean;
+    MoveRectClient: TRect;
+    C: Integer;
+    tb : TLzCustomToolWindow;
+begin
+  tb := TLzCustomToolWindow(Client);
+  //if MouseOverDock <> nil then begin
+    MoveRectClient := ARect;
+    //MapWindowPoints (0, MouseOverDock.Handle, MoveRectClient, 2);
+    if not(Position in PositionLeftOrRight) then
+      C := (MoveRectClient.Top+MoveRectClient.Bottom) div 2
+    else
+      C := (MoveRectClient.Left+MoveRectClient.Right) div 2;
+    NewDockRow := GetRowOf(C, Before);
+    if Before then
+      InsertRowBefore (NewDockRow)
+    else
+      if tb.FullSize and
+         (GetNumberOfToolbarsOnRow(NewDockRow, tb) <> 0) then begin
+        Inc (NewDockRow);
+        InsertRowBefore (NewDockRow);
+      end;
+    tb.FDockRow := NewDockRow;
+    if not(Position in PositionLeftOrRight) then
+      tb.FDockPos := MoveRectClient.Left
+    else
+      tb.FDockPos := MoveRectClient.Top;
+    //Parent := MouseOverDock;
+  inherited DoAddDockClient(Client, ARect);
+    
+    tb.DockedTo.ArrangeToolbars (True);
+  {end
+  else begin
+    FFloatingTopLeft := MoveRect.TopLeft;
+    FFloatingRect := MoveRect;//x2nie
+    if DockedTo <> nil then
+      Parent := ValidToolWindowParentForm(Self)
+    else
+      //SetBounds (FFloatingTopLeft.X, FFloatingTopLeft.Y, Width, Height);
+      Parent.SetBounds(FFloatingTopLeft.X, FFloatingTopLeft.Y, Parent.Width, Parent.Height);
+      
+  end;}
+
+  { Make sure it doesn't go completely off the screen }
+  //MoveOnScreen (True);
 end;
 
 procedure TLzDock.DockOver(Source: TDragDockObject; X, Y: Integer;
@@ -1267,7 +1315,7 @@ begin
     Size := OrderControls(True, PreviousDockType, DockingTo);
     with Size do
       if Resize then begin
-        if Docked then begin
+        if IsDocked then begin
           GetDockRowSize (WH);
           if not(DockedTo.Position in PositionLeftOrRight) then begin
             if WH > Y then Y := WH;
@@ -1289,6 +1337,8 @@ begin
           DisableAutoSizing;
           try
             SetBounds (Left, Top, X, Y);
+            //Width := X;
+            //Height:= Y;
           finally
             EnableAutoSizing;
           end;
@@ -1909,7 +1959,7 @@ begin
   Temp := Rect(0,0,0,0);
   if R = nil then
     R := @Temp;
-  if not Docked then begin
+  if not IsDocked then begin
     {GetFloatingNCArea (TL, BR);
     FNonClientWidth := TL.X + BR.X;
     FNonClientHeight := TL.Y + BR.Y;
@@ -1922,7 +1972,7 @@ begin
     InflateRect (R^, -DockedBorderSize, -DockedBorderSize);
     FNonClientWidth := DockedBorderSize2;
     FNonClientHeight := DockedBorderSize2;
-      Z := DragHandleSizes[FCloseButtonWhenDocked, FDragHandleStyle];
+    Z := DragHandleSizes[FCloseButtonWhenDocked, FDragHandleStyle];
       //if assigned(DockedTo) and not(DockedTo.Position in PositionLeftOrRight) then
       begin
         Inc (R.Left, Z);

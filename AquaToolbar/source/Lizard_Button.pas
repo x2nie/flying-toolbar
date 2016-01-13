@@ -273,7 +273,7 @@ type
     procedure SetImageIndex (Value: Integer); override;
   end;
 
-  TToolbarButtonX2ActionLinkClass = class of TLzToolbarButtonActionLink;
+  TLzToolbarButtonActionLinkClass = class of TLzToolbarButtonActionLink;
   {$ENDIF}
 
   { TEdit97 }
@@ -1784,7 +1784,6 @@ end;
 constructor TLzToolbarButton.Create (AOwner: TComponent);
 begin
   inherited;
-
   if ButtonMouseTimer = nil then begin
     ButtonMouseTimer := TTimer.Create(nil);
     ButtonMouseTimer.Enabled := False;

@@ -152,16 +152,17 @@ type
 const
   tbx2DefaultBarWidthHeight = 8;
 
-  tbx2TopMarginFloating = 2;
+  {TODO: Below are obsolete}
+  tbx2TopMarginFloating = 0;
   tbx2TopMarginDocked = 0;
   tbx2TopMargin: array[Boolean] of Integer = (tbx2TopMarginFloating, tbx2TopMarginDocked);
-  tbx2BottomMarginFloating = 1;
+  tbx2BottomMarginFloating = 0;
   tbx2BottomMarginDocked = 0;
   tbx2BottomMargin: array[Boolean] of Integer = (tbx2BottomMarginFloating, tbx2BottomMarginDocked);
-  tbx2LeftMarginFloating = 4;
+  tbx2LeftMarginFloating = 0;
   tbx2LeftMarginDocked = 0;
   tbx2LeftMargin: array[Boolean] of Integer = (tbx2LeftMarginFloating, tbx2LeftMarginDocked);
-  tbx2RightMarginFloating = 4;
+  tbx2RightMarginFloating = 0;
   tbx2RightMarginDocked = 0;
   tbx2RightMargin: array[Boolean] of Integer = (tbx2RightMarginFloating, tbx2RightMarginDocked);
   tbx2LineSpacing = 6;
